@@ -1,0 +1,36 @@
+.menu:hover{
+	background-color: #154cf4;
+}
+
+
+#diagnostico_buscar{
+ 
+ 
+	display: block;
+
+}
+ 
+#diagnostico_paciente{
+ 
+	width: 80%;
+	margin-left: 10%;
+}
+ 
+ 
+html {
+  min-height: 100%;
+  position: relative;
+}
+body {
+ 
+  margin: 0;
+  margin-bottom: 80px;
+}
+footer {
+ 
+  position: absolute;
+  bottom: 0px;
+  width: 102%;
+  height: 70px;
+ 
+}
