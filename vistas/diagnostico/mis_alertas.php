@@ -10,11 +10,12 @@ if (!isset($usuario)){
 <html>
 <head>
 	<meta charset="utf-8">
-	<title></title>
+	<title>Alertas</title>
+	<link rel="icon" href="../../imagenes/favicon.png">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="stylesheet" type="text/css" href="../../css/b_css/bootstrap.min.css">
 	<link rel="stylesheet" type="text/css" href="../../css/menu.css">
-	<link rel="stylesheet" type="text/css" href="/iess/css/mensaje_error.css">
+	<link rel="stylesheet" type="text/css" href="../../css/mensaje_error.css">
 </head>
 <body>
 	
@@ -28,8 +29,8 @@ if (!isset($usuario)){
 		<?php
 		include( $_SERVER['DOCUMENT_ROOT']."/iess/archivos_php/elementos_html/navbar_diagnostico.php");
 		//echo $navbar_diagnostico; 
-		$python = `python3 menu_alertas.py`;
-		echo $python; 
+		include("menu_alertas.php");
+		
 		?>
 
 		<div class="col-1">	</div>
@@ -54,7 +55,7 @@ if (!isset($usuario)){
 							<thead>
 								<tr>
 									<th>PACIENTE</th>
-									<th>DOCTOR</th>
+									<th>COD</th>
 									<th>RESUMEN</th>
 									 
 								 
@@ -99,19 +100,22 @@ if (!isset($usuario)){
 	?>
 
 
+
 	<script type="text/javascript" src="../../js/b_js/bootstrap.min.js"></script>
-	<script type="text/javascript" src="/iess/js/jquery-3.6.0.min.js"></script>
-	<script type="text/javascript" src="/iess/js/jquery.validate.min.js"></script>
-	<script type="text/javascript" src="/iess/js/sweetalert2.all.min.js"></script>
-	<script type="text/javascript" src="/iess/js/mensaje_general.js"></script>
+	<script type="text/javascript" src="../../js/jquery-3.6.0.min.js"></script>
+	<script type="text/javascript" src="../../js/jquery.validate.min.js"></script>
+	<script type="text/javascript" src="../../js/sweetalert2.all.min.js"></script>
+	<script type="text/javascript" src="../../js/mensaje_general.js"></script>
 
 	<script type="text/javascript">
 		//mostrar la tabla
  	litar_notificaciones();
 			
+	
+
 			function litar_notificaciones(){
 				$.ajax({
-					url: '/iess/archivos_php/notificaciones/notificar_a_diagnostico.php',
+					url: '../../archivos_php/notificaciones/notificar_a_diagnostico.php',
 					type: 'GET',
 					success: function(data) { 
 
@@ -120,8 +124,9 @@ if (!isset($usuario)){
 						lista_usuario.forEach(usuario=>{
 							plantilla+=`
 							<tr id_lista_usurios="${usuario.id_notificacion}">
+
 							<td>${usuario.paciente}</td>
-							<td>${usuario.doctor} </td>`;
+							<td>${usuario.cod_examen} </td>`;
 
 							if ((usuario.estado)==0) {
 								plantilla+="<td><button type='button' class='btn btn-success btn_list'>VER</button></td>";
@@ -153,21 +158,22 @@ if (!isset($usuario)){
 				});
 			});
 		});
-	</script>
+	</script> 
 
 	<script type="text/javascript">
 		$(document).on('click','.btn_list',function(e){
 		 
 			let elemento = $(this)[0].parentElement.parentElement;
 			let id=$(elemento).attr('id_lista_usurios');
+			 
  			  
-           $.post('/iess/archivos_php/notificaciones/consultar_resumen.php', {id_notificacion:id}, function(data) {
+           $.post('../../archivos_php/notificaciones/consultar_resumen.php', {id_notificacion:id}, function(data) {
            		 
            		$('#modal_resumen').modal('show');
            		$('#mi_p_modal').text(data);
            		mostrar_alertas();
            });
-           $.post('/iess/archivos_php/notificaciones/notificacion_vista.php', {id_notificacion:id}, function(data) {
+           $.post('../../archivos_php/notificaciones/notificacion_vista.php', {id_notificacion:id}, function(data) {
            			console.log(data);
            			 
            			 litar_notificaciones();
@@ -185,7 +191,7 @@ if (!isset($usuario)){
 		function mostrar_alertas(){
 			//contador de laertas
 			$.ajax({
-					url: '/iess/archivos_php/notificaciones/total_notificaciones.php',
+					url: '../../archivos_php/notificaciones/total_notificaciones.php',
 					type: 'GET',
 					success: function(data) {
 

@@ -13,26 +13,35 @@ if (isset($_POST['id_diag'])) {
 	
 	$clave_temp = time()-1000000;
 	$id_diagnostico = $_POST['id_diag'];
-	$id_antibiograma_basado = 5;
-	$id_antibiotico = $_POST['id_antibiotico'];
-	$atb24 = $_POST['at24'];
+
+	$antibiotico_1 = $_POST['antibiotico_1'];
+	$antibiotico_2 = $_POST['antibiotico_2'];
+	$antibiotico_3 = $_POST['antibiotico_3'];
+
+	$dosis_1 = $_POST['dosis_1'];
+	$dosis_2 = $_POST['dosis_2'];
+	$dosis_3 = $_POST['dosis_3'];
+	
 	$inicio = date('Y-m-d');
-	$medico = $_POST['medico_responsable'];
-	$dosis = $_POST['dosis'];
 	$tiempo = $_POST['tiempo'];
+	$fecha_fin = date("Y-m-d",strtotime($inicio."+ $tiempo days"));
+
+	
 	$escala = $_POST['escala'];
 	$mantiene =  $_POST['mantiene'];
 	$descala = $_POST['descala'];
 	$ajuste_dosis = $_POST['ajuste_dosis'];
-	$fecha_fin = date("Y-m-d",strtotime($inicio."+ $tiempo days"));
+	
 
 	 
 
-	$sql = "INSERT INTO antibiotico__basado_en_antibiograma_manua(ID_ANTIBIOTICO__BASADO_EN_ANTIBIOGRAMA_MANUAL__, ID_DIAGNOSTICO, ID_ESTADO_ANTIBIOTICO_BASADO_EN_ANTIBIOGRAMA, ID_ANTIBIOTICO, ATB_24_H, INICIO, MEDICO_RESPONSABLE, DOSIS, TIEMPO, ESCALA, MANTIENE, DESCALA, AJUSTE_DOSIS,fin) 
-		VALUES ($clave_temp,$id_diagnostico, $id_antibiograma_basado, $id_antibiotico, '$atb24' ,'$inicio','$medico','$dosis','$tiempo','$escala','$mantiene','$descala','$ajuste_dosis','$fecha_fin')";
+	$sql = "INSERT INTO `antibiotico__basado_en_antibiograma_manual`(`ID_ANTIBIOTICO_BASADO_EN_ANTIBIOGRAMA_MANUAL`, `ID_DIAGNOSTICO`, `ANTIBIOTICO_1`, `DOSIS_1`, `ANTIBIOTICO_2`, `DOSIS_2`, `ANTIBIOTICO_3`, `DOSIS_3`, `INICIO`, `TIEMPO`, `FIN`, `ESCALA`, `MANTIENE`, `DESCALA`, `AJUSTE_DOSIS`) 
+			VALUES ($clave_temp,$id_diagnostico,'$antibiotico_1','$dosis_1','$antibiotico_2','$dosis_2','$antibiotico_3','$dosis_3 ','$inicio',$tiempo,'$fecha_fin','$escala','$mantiene','$descala','$ajuste_dosis' )";
  
+  	 
+
 	$resultado = mysqli_query($conexion , $sql);
-	//echo $sql;
+	 
 	if (!$resultado) {
 		die("error insertar archivo insertar_usuarios_sistema ".mysqli_error($conexion));
 	}else{

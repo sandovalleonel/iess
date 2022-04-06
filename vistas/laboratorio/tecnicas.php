@@ -13,7 +13,8 @@ date_default_timezone_set('America/Guayaquil');
 <html>
 <head>
 	<meta charset="utf-8">
-	<title></title>
+	<title>Técnicas</title>
+	<link rel="icon" href="../../imagenes/favicon.png">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="stylesheet" type="text/css" href="../../css/b_css/bootstrap.min.css">
 	<link rel="stylesheet" type="text/css" href="../../css/menu.css">
@@ -30,8 +31,20 @@ date_default_timezone_set('America/Guayaquil');
 		<?php
 		include( $_SERVER['DOCUMENT_ROOT']."/iess/archivos_php/elementos_html/navbar.php");
 		//echo $navbar_laboratorio; 
-		$python = `python3 menu.py`;
-		echo $python; 
+		include("menu.php");
+		?>
+
+
+
+
+		<?php 
+			if (isset($_POST['id_tincion'])) {
+
+				$id_tincion = $_POST['id_tincion'];
+				$paciente = $_POST['paciente'];
+			 
+
+			}
 		?>
 
 		<div class="col-1">	</div>
@@ -59,29 +72,34 @@ date_default_timezone_set('America/Guayaquil');
 						<form id="form_t1" >
 
 							<div class="form-group col-3 d-inline-block">
-								<label for="exampleInputEmail1">Id Tincion</label>
+								<label for="exampleInputEmail1">Id Tinción</label>
 								<input type="text" class="form-control" disabled value="<?php 
-								if(isset($_SESSION['l_s_id_tincion']))
-								echo $_SESSION['l_s_id_tincion'];
-							?>" id="id_tincion">
+								if(isset($id_tincion))
+								echo $id_tincion;
+							?>" >
 						</div>
 						<div class="form-group col-8 d-inline-block">
 							<label for="exampleInputEmail1"> Paciente</label>
 							<input type="text" class="form-control" disabled value="<?php 
 
-							if(isset($_SESSION['l_s_paciente']))
-							echo $_SESSION['l_s_paciente']; ?>" id="paciente">
+							if(isset($paciente))
+							echo $paciente; ?>" >
 						</div>
 
 						<div class="form-group">
-							<label for="exampleInputEmail1">Estado</label>
+							<label for="exampleInputEmail1"> Bacteria</label>
 							<select class="form-select" id="t1_tipo_id">
+								<?php
+									include( $_SERVER['DOCUMENT_ROOT']."/iess/archivos_php/laboratorio/cargar_bacteria.php");
 
+								?>
 							</select>
 						</div>
 						<div class="form-group">
 							<label for="exampleInputEmail1">Gen Resistencia</label>
 							<select class="form-select" id="t1_gen_resistencia">
+								<option>NINGUNO</option>
+								<option>NO APLICA</option>
 								<option>CTX-M</option>
 								<option>KPC</option>
 								<option>NDM</option>
@@ -106,8 +124,10 @@ date_default_timezone_set('America/Guayaquil');
 						</div>
 						<div class="col text-center">
 						<input type='button' value='Guardar' id='btn_bmf' class="btn btn-primary my-3">
-						<!--<button type="submit" class="btn btn-primary my-3" id="btn_bmf">Guardar</button>-->
-						<button type="submit" class="btn btn-danger my-3 btn_terminar" id="">Finalizar</button>
+
+						<input type='button' value='Salir'  class="btn btn-danger my-3 btn_salir" onclick="verificar_salir()">
+						
+						 
 					</div>
 					</form>
 
@@ -123,30 +143,34 @@ date_default_timezone_set('America/Guayaquil');
 
 					<form   id="form_t2">
 						<div class="form-group col-3 d-inline-block">
-							<label for="exampleInputEmail1">Id Tincion</label>
+							<label for="exampleInputEmail1">Id Tinción</label>
 							<input type="text" class="form-control" disabled value="<?php 
-							if(isset($_SESSION['l_s_id_tincion']))
-							echo $_SESSION['l_s_id_tincion'];
+							if(isset($id_tincion))
+							echo $id_tincion;
 						?>" id="id_tincion">
 					</div>
 					<div class="form-group col-8 d-inline-block">
 						<label for="exampleInputEmail1"> Paciente</label>
 						<input type="text" class="form-control" disabled value="<?php 
 
-						if(isset($_SESSION['l_s_paciente']))
-						echo $_SESSION['l_s_paciente']; ?>" id="paciente">
+						if(isset($paciente))
+						echo $paciente; ?>" >
 					</div>
 					<div class="form-group">
-						<label for="exampleInputEmail1">Identificacion Bacteria</label>
+						<label for="exampleInputEmail1"> Bacteria</label>
 						<select class="form-select" id="t2_tipo_id">
-							
+							<?php
+									include( $_SERVER['DOCUMENT_ROOT']."/iess/archivos_php/laboratorio/cargar_bacteria.php");
+
+								?>
 						</select>
 						
 					</div>
 					<div class="form-group">
 						<label for="exampleInputEmail1">Fenotipo</label>
 						<select class="form-select" id="t2_fenotipo">
-							<option> Ninguno </option>
+							<option>NINGUNO</option>
+							<option>NO APLICA</option>
 							<option> BLEE </option>
 							<option> AmpC </option>
 							<option> Carbapenemasa no identificada </option>
@@ -171,8 +195,9 @@ date_default_timezone_set('America/Guayaquil');
 					<div class="form-group">
 						<label for="exampleInputEmail1">Reporte Acorde a Guia</label>
 						<select class="form-select" id="t2_reporte_acorde_guia">
-							<option>SI</option>
 							<option>NO</option>
+							<option>SI</option>
+							
 						</select>
 					</div>
 
@@ -183,8 +208,10 @@ date_default_timezone_set('America/Guayaquil');
 						<input type="text" class="form-control" id="t2_observacion">
 					</div>
 					<div class="col text-center">
-					<button type="submit" class="btn btn-primary my-3" id="btn_antibiograma">Guardar</button>
-					<button type="submit" class="btn btn-danger my-3 btn_terminar " id="">Finalizar</button>
+						<input type='button' value='Guardar' id='btn_antibiograma' class="btn btn-primary my-3">
+						<input type='button' value='Salir'  class="btn btn-danger my-3 btn_salir" onclick="verificar_salir()">
+					
+					
 				</div>
 				</form>	
 			</div>
@@ -199,29 +226,34 @@ date_default_timezone_set('America/Guayaquil');
 				<form id="form_t3" >
 
 					<div class="form-group col-3 d-inline-block">
-						<label for="exampleInputEmail1">Id Tincion</label>
+						<label for="exampleInputEmail1">Id Tinción</label>
 						<input type="text" class="form-control" disabled value="<?php 
-						if(isset($_SESSION['l_s_id_tincion']))
-						echo $_SESSION['l_s_id_tincion'];
+						if(isset($id_tincion))
+						echo $id_tincion;
 					?>" id="id_tincion">
 				</div>
 				<div class="form-group col-8 d-inline-block">
 					<label for="exampleInputEmail1"> Paciente</label>
 					<input type="text" class="form-control" disabled value="<?php 
 
-					if(isset($_SESSION['l_s_paciente']))
-					echo $_SESSION['l_s_paciente']; ?>" id="paciente">
+					if(isset($paciente))
+					echo $paciente; ?>" >
 				</div>
 
 				<div class="form-group">
-					<label for="exampleInputEmail1">Estado</label>
+					<label for="exampleInputEmail1">Bacteria</label>
 					<select class="form-select" id="t3_tipo_id">
+						<?php
+									include( $_SERVER['DOCUMENT_ROOT']."/iess/archivos_php/laboratorio/cargar_bacteria.php");
 
+								?>
 					</select>
 				</div>
 				<div class="form-group">
 					<label for="exampleInputEmail1">Mec Resistencia</label>
 					<select class="form-select" id="t3_mec_resistencia">
+						<option>NINGUNO</option>
+						<option>NO APLICA</option>
 						<option>CTX-M</option>
 						<option>KPC</option>
 						<option>NDM</option>
@@ -246,14 +278,17 @@ date_default_timezone_set('America/Guayaquil');
 				</div>
 				<div class="col text-center">
 				<input type='button' value='Guardar' id='btn_bme' class="btn btn-primary my-3">
-				<!--<button type="submit" class="btn btn-primary my-3" id="btn_bmf">Guardar</button>-->
-				<button type="submit" class="btn btn-danger my-3 btn_terminar" id="">Finalizar</button>
+				<input type='button' value='Salir'  class="btn btn-danger my-3 btn_salir" onclick="verificar_salir()">
+				<!--<a href="/iess/vistas/laboratorio/ver_pacientes" class="btn btn-danger" onclick="verificar_salir()">Finalizar y Salir</a>-->
+				 
+				
 			</div>
 			</form>
 		</div>
 		<!-- tec3*+++++++++++++++++++++++++++++++-->
 	</div>
 
+		
 </div> 
 
 </div>
@@ -270,16 +305,13 @@ echo $footer;
 
 <script type="text/javascript" src="../../js/jquery-3.6.0.min.js"></script>
 <script type="text/javascript" src="../../js/b_js/bootstrap.min.js"></script>
-<script type="text/javascript" src="/iess/js/sweetalert2.all.min.js"></script>
-<script type="text/javascript" src="/iess/js/mensaje_general.js"></script>
+<script type="text/javascript" src="../../js/sweetalert2.all.min.js"></script>
+<script type="text/javascript" src="../../js/mensaje_general.js"></script>
 
-<script type="text/javascript">
-	$(document).on('click', '.btn_terminar', function(event) {
-		$.post('/iess/archivos_php/laboratorio/terminar_tecnicas.php', {param1: 'value1'}, function(data) {
-			$(location).attr('href', '/iess/vistas/laboratorio/ver_pacientes')
-		});
-	});
-</script>
+
+ 
+
+
 <script type="text/javascript">
 		//validar campo paciente y tincion
 		function validar_datos(){
@@ -287,11 +319,11 @@ echo $footer;
 			$tincion = $('#id_tincion').val();
 			$paciente = $('#paciente').val();
 			if ($paciente=="") {
-				erro_message("Error, seleccione paciente");
+				erro_message("Error, seleccione un paciente en la sección mis pacientes");
 				estado=false;
 			}
 			if ($tincion=="") {
-				erro_message("El paciente no tiene tincion");
+				erro_message("Error, seleccione un paciente en la sección mis pacientes");
 				estado=false;
 			}
 			return estado;
@@ -299,30 +331,10 @@ echo $footer;
 		}
 </script>
 
-	<script type="text/javascript">
-		//cargar 3 combos
-		cargar_combo(1,"t1_tipo_id");
-		cargar_combo(2,"t2_tipo_id");
-		cargar_combo(3,"t3_tipo_id");
-		function cargar_combo(id,nombre_combo){
-			$.post('/iess/archivos_php/laboratorio/cargar_tres_combos_tecnicas.php', {id_opcion: id}, function(data) {
 
-				let lista = JSON.parse(data);
-				let plantilla = '';
-
-				lista.forEach(usuario=>{
-					plantilla+=`<option value="${usuario.id_estado}">${usuario.estado}</option>`;
-				});
-				$('#'+nombre_combo).empty();
-				$('#'+nombre_combo).append(plantilla);
-
-			});	
-
-		}
-	</script>
 
 	<script type="text/javascript">
-		//ingresar tecnica bmf
+		//ingresar tecnica array
 		$(document).on('click', '#btn_bmf', function(event) {
 			event.preventDefault();
 			if(validar_datos()){
@@ -335,54 +347,34 @@ echo $footer;
 		function ingresar_tecnica_bmf(){
 			var data_form ={
 				id_gram:$('#id_tincion').val(),
-				observacion:$('#t1_observacion').val(),
-				id_estado:$('#t1_tipo_id').val(),
-				gen_resistencia:$('#t1_gen_resistencia').val()
+				id_bacteria:$('#t1_tipo_id').val(),
+				gen_resistencia:$('#t1_gen_resistencia').val(),
+				comentario:$('#t1_observacion').val(),
+				
 			};
-			console.log(data_form);
-			$.post('/iess/archivos_php/laboratorio/ingresar_tecnica_bmf.php', data_form, function(data) {
-				console.log(data);
+			 
+			$.post('../../archivos_php/laboratorio/ingresar_tecnica_bmf.php', data_form, function(data) {
+				console.log(data)
+				 
 				if (data=="ok") {
 					succes_message("Creado correctamente");
 					$('#form_t1 input').attr('disabled', 'disabled');
+					$('#form_t1 select').attr('disabled', 'disabled');
 					$("#btn_bmf").attr("disabled",true);
 					$("#btn_bmf").attr('value', 'Guardado');
+					$(".btn_salir").attr("disabled",false);
 
-				}else{
-					erro_message("Error al ingresar");
+				}else if (data=="existe") {
+					erro_message("El examen ya tiene registrada esta técnica");
+					$('#form_t1 input').attr('disabled', 'disabled');
+					$('#form_t1 select').attr('disabled', 'disabled');
+					$("#btn_bmf").attr("disabled",true);
+					$("#btn_bmf").attr('value', 'Guardado');
+					$(".btn_salir").attr("disabled",false);
 				}
-			});
-		}
-	</script>
-
-	<script type="text/javascript">
-		//ingresar bme
-		$(document).on('click', '#btn_bme', function(event) {
-			event.preventDefault();
-			if(validar_datos()){
-				ingresar_tecnica_bme()
-			}
-
-		});
 
 
-		function ingresar_tecnica_bme(){
-			var data_form ={
-				id_gram:$('#id_tincion').val(),
-				observacion:$('#t3_observacion').val(),
-				id_estado:$('#t3_tipo_id').val(),
-				gen_resistencia:$('#t3_mec_resistencia').val()
-			};
-			console.log(data_form);
-			$.post('/iess/archivos_php/laboratorio/ingresar_tecnica_bme.php', data_form, function(data) {
-				console.log(data);
-				if (data=="ok") {
-					succes_message("Creado correctamente");
-					$('#form_t3 input').attr('disabled', 'disabled');
-					$("#btn_bme").attr("disabled",true);
-					$("#btn_bme").attr('value', 'Guardado');
-
-				}else{
+				else{
 					erro_message("Error al ingresar");
 				}
 			});
@@ -391,7 +383,7 @@ echo $footer;
 
 
 	<script type="text/javascript">
-		//ingresar antibiograma
+
 		$(document).on('click', '#btn_antibiograma', function(event) {
 			event.preventDefault();
 			if(validar_datos()){
@@ -399,30 +391,117 @@ echo $footer;
 			}
 
 		});
-
-
+		//ingresar antibiograma
 		function ingresar_tecnica_antibiograma(){
 			var data_form ={
 				id_gram:$('#id_tincion').val(),
-				observacion:$('#t2_observacion').val(),
-				id_estado:$('#t2_tipo_id').val(),
+				id_bacteria:$('#t2_tipo_id').val(),
 				fenotipo:$('#t2_fenotipo').val(),
-				reporte_guia:$('#t2_reporte_acorde_guia').val()
+				reporte_guia:$('#t2_reporte_acorde_guia').val(),
+				observacion:$('#t2_observacion').val(),
+				
 			};
-			console.log(data_form);
-			$.post('/iess/archivos_php/laboratorio/ingresar_tecnica_antibiograma.php', data_form, function(data) {
-				console.log(data);
+			 
+			$.post('../../archivos_php/laboratorio/ingresar_tecnica_antibiograma.php', data_form, function(data) {
+				
 				if (data=="ok") {
 					succes_message("Creado correctamente");
 					$('#form_t2 input').attr('disabled', 'disabled');
+					$('#form_t2 select').attr('disabled', 'disabled');
 					$("#btn_antibiograma").attr("disabled",true);
 					$("#btn_antibiograma").attr('value', 'Guardado');
+					$(".btn_salir").attr("disabled",false);
+					
 
+				}else if (data=="existe") {
+					erro_message("El examen ya tiene registrada esta técnica");
+					$('#form_t2 input').attr('disabled', 'disabled');
+					$('#form_t2 select').attr('disabled', 'disabled');
+					$("#btn_antibiograma").attr("disabled",true);
+					$("#btn_antibiograma").attr('value', 'Guardado');
+					$(".btn_salir").attr("disabled",false);
+					
 				}else{
 					erro_message("Error al ingresar");
 				}
 			});
 		}
+
 	</script>
+
+
+
+		<script type="text/javascript">
+
+		$(document).on('click', '#btn_bme', function(event) {
+			event.preventDefault();
+			if(validar_datos()){
+				ingresar_tecnica_eplex()
+			}
+
+		});
+		//ingresar eplex
+		function ingresar_tecnica_eplex(){
+			var data_form ={
+				id_gram:$('#id_tincion').val(),
+				id_bacteria:$('#t3_tipo_id').val(),
+				mec_resistencia:$('#t3_mec_resistencia').val(),
+				observacion:$('#t3_observacion').val(),
+				
+				
+			};
+			 
+			$.post('../../archivos_php/laboratorio/ingresar_tecnica_bme.php', data_form, function(data) {
+				console.log(data)
+				
+				if (data=="ok") {
+					succes_message("Creado correctamente");
+					$('#form_t3 input').attr('disabled', 'disabled');
+					$('#form_t3 select').attr('disabled', 'disabled');
+					$("#btn_bme").attr("disabled",true);
+					$("#btn_bme").attr('value', 'Guardado');
+					$(".btn_salir").attr("disabled",false);
+					
+
+				}else if (data=="existe") {
+					erro_message("El examen ya tiene registrada esta técnica");
+					$('#form_t3 input').attr('disabled', 'disabled');
+					$('#form_t3 select').attr('disabled', 'disabled');
+					$("#btn_bme").attr("disabled",true);
+					$("#btn_bme").attr('value', 'Guardado');
+					$(".btn_salir").attr("disabled",false);
+					
+				}else{
+					erro_message("Error al ingresar");
+				}
+			});
+		}
+
+	</script>
+
+
+	<script type="text/javascript">
+		
+		function verificar_salir(){
+			Swal.fire({
+			title: 'Está seguro?',
+			text: "Finalizar y volver al menú principal?",
+			icon: 'warning',
+			showCancelButton: true,
+			confirmButtonColor: '#d33',
+			cancelButtonColor: '#9b9b9b',
+			confirmButtonText: 'Si ',
+			cancelButtonText: 'Cancelar'
+
+		}).then((result) => {
+			if (result.isConfirmed) {
+				location.href ="../../vistas/laboratorio/ver_pacientes";
+				
+			}
+		})
+		}
+	</script>
+
+	
 </body>
 </html>

@@ -1,7 +1,10 @@
 <?php
 require '../../conexion_base/conexion_base.php';
 
-$sql = "SELECT ID_USUARIO, CONCAT(p.NOM_PERSONAL,' ',p.APE_PERSONAL),u.USUARIO,p.CARGO FROM usuarios u ,personal_medico p WHERE p.ID_PERSONALMEDICO = u.ID_PERSONALMEDICO";
+$sql = "SELECT ID_USUARIO, CONCAT(p.NOM_PERSONAL,' ',p.APE_PERSONAL),u.USUARIO,r.NOMBRE_CARGO
+		FROM usuarios u ,personal_medico p , rol r
+		WHERE p.ID_PERSONALMEDICO = u.ID_PERSONALMEDICO 
+		AND	p.CARGO = r.CARGO";
 $resultado = mysqli_query($conexion , $sql);
 
 if (!$resultado) 

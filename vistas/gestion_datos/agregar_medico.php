@@ -8,15 +8,16 @@
 ?>
 <!DOCTYPE html>
 <html>
-<head>
+<head >
 	<meta charset="utf-8">
-	<title></title>
+	<title>Agregar Médico</title>
+	<link rel="icon" href="../../imagenes/favicon.png">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	 <link rel="stylesheet" type="text/css" href="../../css/b_css/bootstrap.min.css">
 	 <link rel="stylesheet" type="text/css" href="../../css/menu.css">
 	 <link rel="stylesheet" type="text/css" href="/iess/css/mensaje_error.css">
 </head>
-<body>
+<body >
 	
  
  	<?php
@@ -28,8 +29,7 @@
  		<?php
 			include( $_SERVER['DOCUMENT_ROOT']."/iess/archivos_php/elementos_html/navbar.php");
 			//echo $navbar_gesios_datos; 
-			$python = `python3 menu.py`;
-			echo $python; 
+			include("menu.php"); 
 		?>
  
  		<div class="col-1">	</div>
@@ -41,7 +41,7 @@
  				<form id="form_medico">
  					<div>
  						<label class="form-label">Cédula</label>
- 						<input class="form-control" type="text" name="cedula" id="cedula" >
+ 						<input class="form-control" type="number" name="cedula" id="cedula" >
  					</div>
  					<div>
  						<label class="form-label">Código AS400</label>
@@ -60,8 +60,9 @@
  						<label class="form-label">Cargo</label>
  						<select class="form-select" id="cargo" name="cargo">
  							<option></option>
- 							<option value="Doctor">Doctor</option>
- 							<option value="Administrador">Administrador</option>
+ 							<option value="1">Administrador</option>
+ 							<option value="2">Médico</option>
+ 							<option value="3">Laboratorio</option>
  						</select> 
  						</div>	
  						<div class="col text-center">				
@@ -142,11 +143,17 @@
   	function ingresar_medico(){
   		let data_form = $('#form_medico').serialize();
   		$.post( "/iess/archivos_php/gestion_datos/insert_doctor.php",data_form, function( data ) {
+  			console.log(data)
   			if (data=='ok') {
   				succes_refresh("Datos guardados correctamente","/iess/vistas/gestion_datos/agregar_medico");
 
-  			}else {
-  				erro_message("Erro al guardar");
+  			}else if (data=="existe_1") {
+  				erro_message("Error cédula duplicada");
+  			}else if (data=="existe_2") {
+  				erro_message("Error código duplicado");
+  			}
+  			else {
+  				erro_message("Error al guardar");
   			}		
   		});
 

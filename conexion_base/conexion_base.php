@@ -1,8 +1,8 @@
 <?php
 
 $servidor = "localhost";
-$usuario="root";
-$contrasenia="";
+$usuario="admin";
+$contrasenia="admin";
 $db="iess";
 
 

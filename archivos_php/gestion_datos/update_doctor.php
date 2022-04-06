@@ -10,6 +10,8 @@ if (isset($_POST['id_doctor'])) {
 	$apellido = $_POST['apellido_doctor'];
 	$cargo = $_POST['cargo_doctor'];
 
+	
+
 	try {
 		
 	
@@ -19,7 +21,7 @@ if (isset($_POST['id_doctor'])) {
 	$resultado = mysqli_query($conexion, $sql);
 
 	if (!$resultado) 
-		die("Error Actualizar doctor").mysqli_error($conexion);
+		die("No Actualizó ningun dato").mysqli_error($conexion);
 
 	echo "Datos Actualizados";
 

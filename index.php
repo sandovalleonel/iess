@@ -14,7 +14,8 @@ if (isset($_SESSION['username'])){
 <html>
 <head>
 	<meta charset="utf-8">
-	<title></title>
+	<title>Home</title>
+	<link rel="icon" href="imagenes/favicon.png">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="stylesheet" type="text/css" href="css/b_css/bootstrap.min.css">
 	<link rel="stylesheet" type="text/css" href="css/mensaje_error.css">

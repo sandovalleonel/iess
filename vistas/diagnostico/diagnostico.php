@@ -13,10 +13,11 @@ if (!isset($usuario)){
 <head>
 	<meta charset="utf-8">
 	<title>Dianóstico</title>
+	<link rel="icon" href="../../imagenes/favicon.png">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="stylesheet" type="text/css" href="../../css/b_css/bootstrap.min.css">
 	<link rel="stylesheet" type="text/css" href="../../css/menu.css">
-	<link rel="stylesheet" type="text/css" href="/iess/css/mensaje_error.css">
+	<link rel="stylesheet" type="text/css" href="../../css/mensaje_error.css">
 </head>
 <body>
 	
@@ -31,22 +32,25 @@ if (!isset($usuario)){
 		include( $_SERVER['DOCUMENT_ROOT']."/iess/archivos_php/elementos_html/navbar_diagnostico.php");
 		//echo $navbar_diagnostico; 
 		
-		$python = `python3 menu.py`;
-		echo $python; 
+		include("menu.php");
 		?>
 
 		<div class="col-1">	</div>
 
 		<div class="col-xs-12 col-md-6  mt-5 shadow"  >
 			<div class="shadow p-2">
-				<div class="col-6  d-inline-block">
+				<div class="d-inline-block col-md-7">
 					<form id="form_buscar_paciente">
+						<div class="d-inline-block " style="width:60%;">
+						<input class="form-control "  type="text" name="buscar_paciente" id="buscar_paciente" placeholder="Ingrese apellido..">
+						</div>
+						<div class="d-inline-block" style="width:30%;">
+						<button class="btn btn-primary " id="diagnostico_cargar_combo" name="diagnostico_cargar_combo">Buscar</button>
+						</div>
 						
-						<input class="form-control d-inline-block" style="width: 70%;" type="text" name="buscar_paciente" id="buscar_paciente" placeholder="Ingrese apellido..">
-						<button class="btn btn-primary" id="diagnostico_cargar_combo" name="diagnostico_cargar_combo">Buscar</button>
 					</form>
 				</div>
-				<div class="col-5  d-inline-block">
+				<div class="col-md-4 col-xs-12 col-sm-12  d-inline-block ">
 					<select class="form-select" style="background: #CECAC9;" name="diagnostico_paciente" id="diagnostico_paciente">
 					</select>
 				</div>
@@ -72,41 +76,14 @@ if (!isset($usuario)){
 					</div>
 					
 					<div>
-						<label class="form-label">Código Enfermedad</label>
-						<br>
-						<div class="col-2 d-inline-block">
-							<select class="form-select cod_enfermedad_combo"   id="id_abc"></select>
-						</div>
-						<div class="col-2 d-inline-block">
-							<select class="form-select cod_enfermedad_combo" id="id_abc_numero"></select>
-						</div>
-						<div class="col-7 d-inline-block">
-
-							<select class="form-select" name="diagnostico_enfermedad" id="diagnostico_enfermedad"> 
-								<option value="0"></option>
-							</select> 
-							<label id="diagnostico_enfermedad_error" style="display: none; color: red;" >Seleccione un elemento</label>				 
-						</div>
+					<label class="form-label">Enfermedades	</label>	
+					<button class="btn btn-success" id="add">Add</button>
+					<div id="canvas">
+					</div>
+					<br>
 					</div>
 
-					<div>
-						<label class="form-label">Código Enfermedad 2 (Opcional)</label>
-						<br>
-						<div class="col-2 d-inline-block">
-							<select class="form-select cod_enfermedad_combo_2" id="id_abc_2"></select>
-						</div>
-						<div class="col-2 d-inline-block">
-							<select class="form-select cod_enfermedad_combo_2" id="id_abc_numero_2"></select>
-						</div>
-						<div class="col-7 d-inline-block">
-
-							<select class="form-select" name="diagnostico_enfermedad_2" id="diagnostico_enfermedad_2"> 
-								<option value="0">No seleccionado</option>
-							</select> 
-							<label id="diagnostico_enfermedad_error" style="display: none; color: red;" >Seleccione un elemento</label>				 
-						</div>
-					</div>
-					
+				 	
 
 					<div class="form-group">
 						<label class="form-label">Comentario</label>
@@ -127,20 +104,52 @@ if (!isset($usuario)){
 	?>
 
 
+<div class="modal" tabindex="-1" role="dialog" id="modal_enfermedad"> 
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Enfermedades</h5>
+      </div>
+      <div class="modal-body">
+	  <div>
+						<label class="form-label">Código Enfermedad</label>
+						<br>
+						<div class="col-2 d-inline-block">
+							<select class="form-select cod_enfermedad_combo"   id="id_abc"></select>
+						</div>
+						<div class="col-2 d-inline-block">
+							<select class="form-select cod_enfermedad_combo" id="id_abc_numero"></select>
+						</div>
+						<div class="col-7 d-inline-block">
+
+							<select class="form-select" name="diagnostico_enfermedad" id="diagnostico_enfermedad"> 
+								
+							</select> 
+							<label id="diagnostico_enfermedad_error" style="display: none; color: red;" >Seleccione un elemento</label>				 
+						</div>
+					</div>
+      </div>
+      <div class="modal-footer">
+	  <button type="button" class="btn btn-primary" data-dismiss="modal" id="carga_enf">Seleccionar</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" id="cerrar_enf">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
 	<script type="text/javascript" src="../../js/b_js/bootstrap.min.js"></script>
-	<script type="text/javascript" src="/iess/js/jquery-3.6.0.min.js"></script>
-	<script type="text/javascript" src="/iess/js/jquery.validate.min.js"></script>
-	<script type="text/javascript" src="/iess/js/sweetalert2.all.min.js"></script>
-	<script type="text/javascript" src="/iess/js/mensaje_general.js"></script>
+	<script type="text/javascript" src="../../js/jquery-3.6.0.min.js"></script>
+	<script type="text/javascript" src="../../js/jquery.validate.min.js"></script>
+	<script type="text/javascript" src="../../js/sweetalert2.all.min.js"></script>
+	<script type="text/javascript" src="../../js/mensaje_general.js"></script>
 
 	<script type="text/javascript">
 		function validacion_formulario(){
 			let cont = 0;
 			let mapa = new Map();
 			mapa.set("diagnostico_nombre_paciente",$('#diagnostico_nombre_paciente').val().trim().length);
-			//mapa.set("diagnostico_descripcion",$('#diagnostico_descripcion').val().trim().length);
-			
-			mapa.set("diagnostico_enfermedad",$('#diagnostico_enfermedad').val());
+	
 
 			mapa.forEach((valor,clave)=> {
 				$('#'+clave).css("border", "1px solid #ced4da");
@@ -163,7 +172,15 @@ if (!isset($usuario)){
 
 			$(document).on('click','#diagnostico_btn_crear',function(e){ 
 				e.preventDefault();
+
+				let exite_enfermeddad = $.map($('input[type=hidden][name="enf[]"]'), function(el) { return el.value; });
+			 
+				
 				if (validacion_formulario()==0) {
+					if(exite_enfermeddad.length<1){
+						alert("error, seleccione una enfermedad");
+						return;
+					}
 					console.log('Listo para guardar');
 					gurdar();
 				}else {
@@ -174,24 +191,25 @@ if (!isset($usuario)){
 
   		//insertar con ajax
   		function gurdar() {
-  			let data_form = $('#diagnostico_form').serialize();
+			let enf =  $.map($('input[type=hidden][name="enf[]"]'), function(el) { return el.value; });
+			let enf_name =  $.map($('input[type=text][name="enf_name[]"]'), function(el) { return el.value; });
+
+  			let data_form={
+  				diagnostico_id_paciente:$('#diagnostico_id_paciente').val(),
+  				diagnostico_id_medico:$('#diagnostico_id_medico').val(),
+  				diagnostico_descripcion:$('#diagnostico_descripcion').val(),
+  				paciente_name:$('#paciente_name').val(),
+				enfermedades_id:enf,
+				enfermedades_name:enf_name
+
+  			};
+  					 
+
   			
-  			let desc_diag = $('select[name="diagnostico_enfermedad"] option:selected').text();
-
-  			let desc_diag2 = "";
-
-  			($('#diagnostico_enfermedad_2').val()==0) ? desc_diag2 ="No selecionado" :  desc_diag2 = $('select[name="diagnostico_enfermedad_2"] option:selected').text();
-  			
-
-  			data_form = `${data_form}&desc_diag=${desc_diag}, ${desc_diag2}`;
-
-			 
-
-  			
-  			$.post('/iess/archivos_php/diagnostico/insertar_diagnostico.php',data_form,function(response){
+  			$.post('../../archivos_php/diagnostico/insertar_diagnostico.php',data_form,function(response){
   				console.log(response);
   				if(response=='ok')
-  					succes_refresh("Formulario guardado correctamente","/iess/vistas/diagnostico/prescripcion_medica");	 
+  					succes_refresh("Formulario guardado correctamente","../../vistas/diagnostico/prescripcion_medica");	 
   				else 
   					erro_message("Error al guardar");
   			});
@@ -215,7 +233,7 @@ if (!isset($usuario)){
   			apellido_paciente: $('#buscar_paciente').val()
   		};
   		;
-  		$.post('/iess/archivos_php/diagnostico/consultar_paciente.php',data_form,function(response){
+  		$.post('../../archivos_php/diagnostico/consultar_paciente.php',data_form,function(response){
 
 
   			let lista_paciente = JSON.parse(response);
@@ -260,7 +278,7 @@ if (!isset($usuario)){
   		const data_form ={
   			cod:codigo
   		};
-  		$.post('/iess/archivos_php/diagnostico/consultar_enfermedad.php',data_form,function(response){
+  		$.post('../../archivos_php/diagnostico/consultar_enfermedad.php',data_form,function(response){
 
   			let lista = JSON.parse(response);
   			plantilla ="";
@@ -292,8 +310,7 @@ if (!isset($usuario)){
 			}
 			$('#id_abc').empty();
 			$('#id_abc').append(plantilla);
-			$('#id_abc_2').empty();
-			$('#id_abc_2').append(plantilla);
+
 
 			var plantilla2="";
 			var numeros=["00","01","02","03","04","05","06","07","08","09"];
@@ -305,8 +322,7 @@ if (!isset($usuario)){
 			}
 			$('#id_abc_numero').empty();
 			$('#id_abc_numero').append(plantilla2);
-			$('#id_abc_numero_2').empty();
-			$('#id_abc_numero_2').append(plantilla2);
+
 
 
 		}
@@ -314,17 +330,11 @@ if (!isset($usuario)){
 
 	<script type="text/javascript">
 		cargar_cambio_enfermedad("diagnostico_enfermedad","",0);
-		cargar_cambio_enfermedad("diagnostico_enfermedad_2","_2",1)
 
 		$(document).on('change','.cod_enfermedad_combo',function(){
 			cargar_cambio_enfermedad("diagnostico_enfermedad","",0);
 
-		});
-
-		$(document).on('change','.cod_enfermedad_combo_2',function(){
-			cargar_cambio_enfermedad("diagnostico_enfermedad_2","_2",1);
-
-		});		 
+		});	 
 
 		function cargar_cambio_enfermedad(etiqueta,sub_etiqueta,opp){
 			var letra = $('#id_abc'+sub_etiqueta).val();
@@ -334,6 +344,46 @@ if (!isset($usuario)){
 			cargar_enfermedad(id,etiqueta,opp);
 		}
 	</script>
+
+<script type="text/javascript">
+	var i = 1;
+        $("#add" ).click(function(e) {
+            e.preventDefault();
+			$('#modal_enfermedad').modal('show');
+        });
+
+
+	
+			
+			$(document).on('click', '#carga_enf', function(e){
+
+				var enf = $('#diagnostico_enfermedad').children("option:selected").text();
+				var id_enf = $('#diagnostico_enfermedad').val();
+
+				let enfermedades= `<div id="ef${i}" class="pb-2">
+										<input type="text" value="${enf}" disabled name="enf_name[]" />
+										<input type="hidden" value="${id_enf}" disabled name="enf[]"/>
+										<button class="del btn btn-danger " id = ${i}>X</button>
+									</div>`;
+				$("#canvas").append(enfermedades);
+				i++;
+				$('#modal_enfermedad').modal('hide');
+			});
+
+
+			$(document).on('click', '.del', function(e){
+            e.preventDefault();
+            var button_id = $(this).attr("id");
+            $('#ef'+button_id+'').remove();
+        	});
+
+			$(document).on('click', '#cerrar_enf', function(e){
+            e.preventDefault();
+				$('#modal_enfermedad').modal('hide');
+        	});
+</script>
+
+
 
 </body>
 </html>

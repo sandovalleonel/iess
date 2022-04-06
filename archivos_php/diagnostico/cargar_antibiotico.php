@@ -13,16 +13,18 @@ require '../../conexion_base/conexion_base.php';
 		die("Error consultar_antibioticos").mysqli_error($conexion);
 	}
 
-	$json = array();
+	$combo_antibiotico = "";
 
 	while($row = mysqli_fetch_array($resultado)){
-		$json[] = array(
-			'id_antibiotico'=>$row[0],
-			'antibiotico' => $row[1]
+		 
+			 
+			$combo_antibiotico .= "<option> $row[1] </option>";
 			
-		);
+	
 	}
 
-	$jsonstring = json_encode($json);
-	echo $jsonstring;
+	$combo_opcional = "<option></option>";
+	$combo_opcional .= $combo_antibiotico;
+
+
 ?>

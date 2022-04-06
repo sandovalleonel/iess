@@ -17,6 +17,7 @@ if (!isset($usuario)){
 <head>
 	<meta charset="utf-8">
 	<title>Administrador</title>
+	<link rel="icon" href="../../imagenes/favicon.png">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 	<link rel="stylesheet" type="text/css" href="../../css/b_css/bootstrap.min.css">
@@ -34,8 +35,7 @@ if (!isset($usuario)){
 			<?php
 			include( $_SERVER['DOCUMENT_ROOT']."/iess/archivos_php/elementos_html/navbar.php");
 		//echo $navbar_usuarios;
-			$python = `python3 menu.py`;
-			echo $python; 
+		include("menu.php");
 			?>
 
 			<!-- Formulario 1*****************************************-->
@@ -88,7 +88,7 @@ if (!isset($usuario)){
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-secondary" data-dismiss="modal" id="btn_salir">Cancelar</button>
-					<button type="button" class="btn btn-primary" id="btn_actualizar">Cambirar</button>
+					<button type="button" class="btn btn-primary" id="btn_actualizar">Cambiar</button>
 				</div>
 			</div>
 		</div>
@@ -104,10 +104,10 @@ if (!isset($usuario)){
 
 	<script type="text/javascript" src="../../js/jquery-3.6.0.min.js"></script>
 	<script type="text/javascript" src="../../js/b_js/bootstrap.min.js"></script>
-	<script type="text/javascript" src="/iess/js/sweetalert2.all.min.js"></script>
-	<script type="text/javascript" src="/iess/js/mensaje_general.js"></script>
+	<script type="text/javascript" src="../../js/sweetalert2.all.min.js"></script>
+	<script type="text/javascript" src="../../js/mensaje_general.js"></script>
 
-	<script type="text/javascript" src="/iess/js/usuarios_administrador/lista_general_usuarios.js"></script>
+	<script type="text/javascript" src="../../js/usuarios_administrador/lista_general_usuarios.js"></script>
 	<script type="text/javascript">
 
 		$("#buscar_admin").on("keyup", function() {
@@ -133,7 +133,7 @@ if (!isset($usuario)){
 					id:$('#id_actualizar').val(),
 					pass:$('#new_password').val()
 				}
-				$.post('/iess/archivos_php/usuarios_administrador/update_password.php', data_form, function(data) {
+				$.post('../../archivos_php/usuarios_administrador/update_password.php', data_form, function(data) {
 					console.log(data)
 					if (data=="ok") {
 						$('#modal_actualizar').modal('hide');

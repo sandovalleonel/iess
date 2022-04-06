@@ -1,46 +1,76 @@
 <?php 
- 
+
 
 require '../../conexion_base/conexion_base.php';
 
 
- 
- 
+
+
 if (isset($_POST['id_gram'])) {
 
-	 
-date_default_timezone_set('America/Guayaquil');
-	 $id_gram=$_POST['id_gram'];
-	 $observacion=$_POST['observacion'];
-	 $id_estado=$_POST['id_estado'];
-	 $gen_resistencia=$_POST['gen_resistencia'];
-	 $fecha=date('Y-m-d');
+
+
+	date_default_timezone_set('America/Guayaquil');
 
 	$id = time()-1636237082;
+	$id_gram=$_POST['id_gram'];
+	$id_bacteria=$_POST['id_bacteria'];
+	$mec_resistencia=$_POST['mec_resistencia'];
+	$observacion=$_POST['observacion'];
+	$fecha=date('Y-m-d');
 
-	$sql = "INSERT INTO tincion_tecnica(ID_TINCION_TECNICA, ID_GRAM, ID_TIPO_TECNICA, OBSERVACION) 
-			VALUES($id,$id_gram,3,'$observacion')";
-			 
- 	
+
+	$sql_existe = "SELECT count(ID_EPLEX) total FROM tecnicas WHERE ID_GRAM=$id_gram";
+	$total = mysqli_query($conexion, $sql_existe);
+	$tem_total = mysqli_fetch_array($total);
+
+	if ($tem_total['total'] > 0) {
+		echo "existe";
+		exit();
+	}
+
+	
+
+	$sql = "INSERT INTO `tecnica_eplex`(`ID_EPLEX`, `ID_BACTERIA`, `MEC_RESISTENCIA`, `FECHA_EPLEX`, `OBSERVACION_EPLEX`)
+	VALUES ($id,$id_bacteria,'$mec_resistencia','$fecha','$observacion')";
+
+
 	$resultado = mysqli_query($conexion, $sql);
 
 	if (!$resultado) 
 		die("Error ingresar tecnica bme_t1").mysqli_error($conexion);
 
 
-	$id2 = time()-1636237082;
 
+
+	//validar si existe, si no ingresar si existe actualizar
+	$sql_validar = "SELECT EXISTS(SELECT * FROM `tecnicas` t WHERE t.ID_GRAM=$id_gram ) existe;";
+	$val = mysqli_query($conexion, $sql_validar);
+	$tem_val = mysqli_fetch_array($val);
+
+	if ($tem_val['existe'] == 1) {
+
+		$sql_atualizar = "UPDATE `tecnicas` SET `ID_EPLEX`=$id WHERE `ID_GRAM` = $id_gram ";
+		$resultado = mysqli_query($conexion, $sql_atualizar);
+			if (!$resultado) 
+				die("Error Actualizar tecnica bme_t1").mysqli_error($conexion);
+		
+	}else{
+		
 	
 
-	$sql2="INSERT INTO biologia_molecular_eplex(ID_EPLEX, ID_ESTADO_BMO_EPLEX, ID_TINCION_TECNICA, ID_PEDIDO, TIPO_ID_BMO_EPLEX, MEC_RESISTENCI, FECHA) 
-		VALUES ($id2,$id_estado,$id,0,0,'$gen_resistencia','$fecha')";
 
- 	
-	$resultado2 = mysqli_query($conexion, $sql2);
+		$id2 = time()-166237082;
 
-	if (!$resultado2) 
-		die("Error ingresar tecnica bme_t2").mysqli_error($conexion);
+		$sql2="INSERT INTO `tecnicas`(`ID_TECNICAS`, `ID_GRAM`, `ID_EPLEX`) 
+		VALUES ($id2,$id_gram,$id)";
 
+		$resultado2 = mysqli_query($conexion, $sql2);
+
+		if (!$resultado2) 
+			die("Error ingresar tecnica bme_t2").mysqli_error($conexion);
+
+	}
 
 	echo "ok";
 	

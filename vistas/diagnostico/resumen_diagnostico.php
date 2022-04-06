@@ -28,12 +28,13 @@ if (isset($_SESSION['ss_id_paciente'])) {
 		<html>
 		<head>
 			<meta charset="utf-8">
-			<title></title>
+			<title>Resumen</title>
+			<link rel="icon" href="../../imagenes/favicon.png">
 
 
 			<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-			<script type="text/javascript" src="/iess/js/jquery-3.6.0.min.js"></script>	
+			<script type="text/javascript" src="../../js/jquery-3.6.0.min.js"></script>	
 			<link rel="stylesheet" type="text/css" href="../../css/b_css/bootstrap.min.css">
 			<link rel="stylesheet" type="text/css" href="../../css/menu.css">
 
@@ -51,8 +52,7 @@ if (isset($_SESSION['ss_id_paciente'])) {
 				<?php
 				include( $_SERVER['DOCUMENT_ROOT']."/iess/archivos_php/elementos_html/navbar_diagnostico.php");
 		//echo $navbar_diagnostico;
-				$python = `python3 menu.py`;
-				echo $python;  
+		include("menu.php");
 				?>
 
 
@@ -115,7 +115,7 @@ if (isset($_SESSION['ss_id_paciente'])) {
 									<input type="hidden" name="" id="id_diagnostico">
 									<label class="form-label">Tipo de Examen</label>
 									<select class="form-select" id="tipo_examen" name="tipo_examen">
-										<option value="1">Sangre</option>
+										<option >Sangre</option>
 									</select> 
 								</div>
 
@@ -143,8 +143,8 @@ if (isset($_SESSION['ss_id_paciente'])) {
 
 
 			<script type="text/javascript" src="../../js/b_js/bootstrap.min.js"></script>
-			<script type="text/javascript" src="/iess/js/sweetalert2.all.min.js"></script>
-			<script type="text/javascript" src="/iess/js/mensaje_general.js"></script>
+			<script type="text/javascript" src="../../js/sweetalert2.all.min.js"></script>
+			<script type="text/javascript" src="../../js/mensaje_general.js"></script>
 
 
 
@@ -158,7 +158,7 @@ if (isset($_SESSION['ss_id_paciente'])) {
 					function litar_usuarios(){
 
 						$.ajax({
-							url: '/iess/archivos_php/diagnostico/resumen.php',
+							url: '../../archivos_php/diagnostico/resumen.php',
 							type: 'GET',
 
 							success: function(data) {
@@ -167,10 +167,11 @@ if (isset($_SESSION['ss_id_paciente'])) {
 		  	let plantilla = '';
 
 		  	lista_general.forEach(usuario=>{
-
+				let aux_enf = (usuario.enfermedad_2 == null)?"":usuario.enfermedad_2;
+ 
 		  		plantilla+=`
 
-		  		<tr id_lista_usurios="${usuario.id_diagnostico}-${usuario.id_prescripcion}" >
+		  		<tr id_lista_usurios="${usuario.id_prescripcion}" >
 
 		  		<td >
 		  		${usuario.nombre_paciente}
@@ -178,91 +179,92 @@ if (isset($_SESSION['ss_id_paciente'])) {
 		  		</td>
 
 		  		<td>
-
+		  		${usuario.id_diagnostico}<br>		  		
 		  		
-		  		<strong>Id_enf1:</strong> ${usuario.id_enfermedad1}
+		  		<strong>Enfermedades: </strong> ${aux_enf}
 		  		<br>
-		  		<strong>Enfermedad 1:</strong> ${usuario.nombre_enfermedad1}
-		  		<br>
-		  		<strong>Id_enf2:</strong> ${usuario.id_enfermedad2}
-		  		<br>
-		  		<strong>Enfermedad 2(opcional):</strong> ${usuario.nombre_enfermedad2}
+		  		<strong>Comentario:</strong> ${usuario.comentario}
 		  		<br>
 		  		<strong>Fecha:</strong> ${usuario.fecha_diagnostico}
-		  		<br>
-		  		<strong>Comentario:</strong> ${usuario.diagnostico}
-		  		
 
 
 		  		</td>	
 		  		`;
 
 
-		  		if (usuario.id_antibiotico==null) {
+		  		if (usuario.id_prescripcion==null) {
 		  			plantilla+=`<td></td>`
 		  		}else {
 		  			plantilla+=`
+		  			
 		  			<td>
-		  			<strong>Id_antbiótico:</strong> ${usuario.id_antibiotico}
-		  			<br>
-		  			<strong>Antibiótico:</strong> ${usuario.antibiotico}
-		  			<br>
-		  			<strong>Dosis:</strong> ${usuario.dosis}
-		  			<br>
-		  			<strong>Escala:</strong> ${usuario.escala}
-		  			<br>
-		  			<strong>Desescala:</strong> ${usuario.desescala}
-		  			<br>
-		  			<strong>Mantiene:</strong> ${usuario.mantiene}
-		  			<br>
-		  			<strong>Ajuste dosis:</strong> ${usuario.ajuste_dosis}
-		  			<br>
-		  			<strong>Fe_inicio:</strong> ${usuario.inicio}
+		  			${usuario.id_prescripcion}<br><br>
+
+		  			<label style="cursor:pointer; cursor: hand;" onClick="desplegar('${usuario.id_prescripcion}','estadoT')" ><strong><u>Ver más..[+] </u></strong></label> <br>
+
+		  			<div  id='${usuario.id_prescripcion}' style="display: none;"> 
+
+		  			<strong>Antbióticos:</strong> <br>
+		  			<strong>*</strong>${usuario.antibiotico_1}  [ ${usuario.dosis_1}]<br>
+		  			<strong>*</strong>${usuario.antibiotico_2}  [${usuario.dosis_2}]<br>
+		  			<strong>*</strong>${usuario.antibiotico_3}  [${usuario.dosis_3}]<br>
+
+		  			<strong>F_inicio:</strong> ${usuario.inicio}
 		  			<br>
 		  			<strong>Tiempo(días):</strong> ${usuario.tiempo}
 		  			<br>
-		  			<strong>Fe_fin:</strong> ${usuario.fin}
+		  			<strong>F_fin:</strong> ${usuario.fin}
+		  			<br>
+		  			<strong>Escala:</strong> ${usuario.escala}
+		  			<br>
+		  			<strong>Mantiene:</strong> ${usuario.mantiene}
+		  			<br>
+		  			<strong>Descala</strong> ${usuario.descala}
+		  			<br>
+		  			<strong>Ajuste dosis::</strong> ${usuario.ajuste_dosis}
 		  			
+		  			</div>
 
 		  			</td>`;
 		  		}
 
 
-		  		if (usuario.tipo_examen==null) {
+		  		if (usuario.id_pedido_examen==null) {
 		  			plantilla+=`<td></td>`
 		  		}else {
 		  			plantilla+=`
 		  			<td>
+		  			${usuario.id_pedido_examen}<br>
 		  			<strong>Tipo:</strong>${usuario.tipo_examen}
 		  			<br>
-		  			<strong>Fecha: </strong>${usuario.fecha_pedido}
+		  			<strong>Fecha: </strong>${usuario.fecha_examen}
 		  			</td>`;
 		  		}
 
 
-		  		if (usuario.id_antibiotico==null) {
+		  		if (usuario.id_prescripcion==null) {
+					  
 		  			plantilla+=`
 
 		  			<td> 
 		  			<form method="post" action="/iess/vistas/diagnostico/prescripcion_medica">
 		  			<input type="hidden" name="id_diag" value="${usuario.id_diagnostico}">
-		  			<input type="hidden" name="diag" value="${usuario.nombre_enfermedad1}, ${usuario.nombre_enfermedad2}">
-		  			<input type="hidden" name="id_pa" value="${usuario.id_paciente}">
+		  			<input type="hidden" name="diag" value="${usuario.enfermedad_2}">
 		  			<input type="hidden" name="pa" value="${usuario.nombre_paciente}">
 
 		  			<button class="btn btn-info btn_crear_prescripcion my-1">Crear Prescrición</button>	
 		  			</form>
 		  			</td>`
 		  		}
-		  		if (usuario.id_antibiotico!=null &&  usuario.tipo_examen==null) {
+		  		if (usuario.id_prescripcion!=null &&  usuario.id_pedido_examen==null) {
 		  			plantilla+=`
 
 
 		  			<td> 
 		  			<form method="post" action="/iess/vistas/diagnostico/prescripcion_medica">
 		  			<input type="hidden" name="id_diag" value="${usuario.id_diagnostico}">
-		  			<input type="hidden" name="diag" value="${usuario.nombre_enfermedad1}, ${usuario.nombre_enfermedad2}">
-		  			<input type="hidden" name="id_pa" value="${usuario.id_paciente}">
+		  			<input type="hidden" name="diag" value=" ${usuario.enfermedad_2}">
+
 		  			<input type="hidden" name="pa" value="${usuario.nombre_paciente}">
 		  			<button class="btn btn-info btn_crear_prescripcion my-1">Nueva prescrición</button>	
 		  			</form>	
@@ -271,14 +273,14 @@ if (isset($_SESSION['ss_id_paciente'])) {
 		  			</td>`
 		  		}
 
-		  		if (usuario.id_antibiotico!=null &&  usuario.tipo_examen!=null) {
+		  		if (usuario.id_prescripcion!=null &&  usuario.id_pedido_examen!=null) {
 		  			plantilla+=`
 
 
 		  			<td> 
 		  			<form method="post" action="/iess/vistas/diagnostico/prescripcion_medica">
 		  			<input type="hidden" name="id_diag" value="${usuario.id_diagnostico}">
-		  			<input type="hidden" name="diag" value="${usuario.nombre_enfermedad1}, ${usuario.nombre_enfermedad2}">
+		  			<input type="hidden" name="diag" value="${usuario.enfermedad_2}">
 		  			<input type="hidden" name="id_pa" value="${usuario.id_paciente}">
 		  			<input type="hidden" name="pa" value="${usuario.nombre_paciente}">
 
@@ -348,11 +350,11 @@ if (isset($_SESSION['ss_id_paciente'])) {
 					}
 
 					console.log(data_form)
-					$.post('/iess/archivos_php/diagnostico/ingresar_examn.php', data_form, function(data) {
+					$.post('../../archivos_php/diagnostico/ingresar_examn.php', data_form, function(data) {
 						console.log(data)
 						if (data=="ok") {
 							$('#modal_pedido_examen').modal('hide');
-							succes_refresh("Datos Guardados",'/iess/vistas/diagnostico/resumen_diagnostico');
+							succes_refresh("Datos Guardados",'../../vistas/diagnostico/resumen_diagnostico');
 							//succes_message("Datos Guardados");
 							
 						}
@@ -381,7 +383,23 @@ if (isset($_SESSION['ss_id_paciente'])) {
 
 
 
+			<script type="teXt/javascript">
+				function desplegar(tabla_a_desplegar,estadoT) {
+					var tablA = document.getElementById(tabla_a_desplegar);
+					var estadOt = document.getElementById(estadoT);
 
+					switch(tablA.style.display) {
+						case "none":
+						tablA.style.display = "block";
+						//estadOt.innerHTML = "Ocultar coneNido"
+						break;
+						default:
+						tablA.style.display = "none";
+						//estadOt.innerHTML = "Mostrar coNteNido"
+						break;
+					}
+				}
+			</script>
 
 
 		</body>

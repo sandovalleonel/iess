@@ -1,11 +1,12 @@
 <?php
 require '../../conexion_base/conexion_base.php';
 
-$sql = "SELECT * FROM personal_medico";
+$sql = "SELECT ID_PERSONALMEDICO,CED_PERSONAL,CODIGO_AS400,NOM_PERSONAL,APE_PERSONAL,NOMBRE_CARGO FROM `personal_medico`, rol where rol.CARGO = personal_medico.CARGO ";
 if (isset($_POST['id'])) {
 	$id_busqueda = $_POST['id'];	
 	$sql = "SELECT * FROM personal_medico where ID_PERSONALMEDICO=$id_busqueda";
 }
+
 
 $resultado = mysqli_query($conexion , $sql);
 

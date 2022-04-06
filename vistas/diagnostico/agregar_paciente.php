@@ -10,11 +10,12 @@
 <html>
 <head>
 	<meta charset="utf-8">
-	<title></title>
+	<title>Agregar paciente</title>
+	<link rel="icon" href="../../imagenes/favicon.png">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	 <link rel="stylesheet" type="text/css" href="../../css/b_css/bootstrap.min.css">
 	 <link rel="stylesheet" type="text/css" href="../../css/menu.css">
-	 <link rel="stylesheet" type="text/css" href="/iess/css/mensaje_error.css">
+	 <link rel="stylesheet" type="text/css" href="../../css/mensaje_error.css">
 </head>
 <body>
 	
@@ -28,8 +29,7 @@
  		<?php
 			include( $_SERVER['DOCUMENT_ROOT']."/iess/archivos_php/elementos_html/navbar.php");
 			//echo $navbar_gesios_datos; 
-			$python = `python3 menu.py`;
-			echo $python; 
+			include("menu.php");
 		?>
  
  		<div class="col-1">	</div>
@@ -57,11 +57,11 @@
  						<input class="form-control" type="number" name="edad" id="edad">
  					</div>
  					<div>
- 						<label class="form-label">Genero</label>
+ 						<label class="form-label">Género</label>
  						<select class="form-select" name="genero" id="genero">
  							<option></option>
- 							<option>Hombre</option>
- 							<option>Mujer</option>
+ 							<option>Masculino</option>
+ 							<option>Femenino</option>
  							<option>Otros</option>
  						</select>
  					</div>
@@ -84,10 +84,10 @@
 
 
   <script type="text/javascript" src="../../js/b_js/bootstrap.min.js"></script>
-  <script type="text/javascript" src="/iess/js/jquery-3.6.0.min.js"></script>
-  <script type="text/javascript" src="/iess/js/jquery.validate.min.js"></script>
-  <script type="text/javascript" src="/iess/js/sweetalert2.all.min.js"></script>
-  <script type="text/javascript" src="/iess/js/mensaje_general.js"></script>
+  <script type="text/javascript" src="../../js/jquery-3.6.0.min.js"></script>
+  <script type="text/javascript" src="../../js/jquery.validate.min.js"></script>
+  <script type="text/javascript" src="../../js/sweetalert2.all.min.js"></script>
+  <script type="text/javascript" src="../../js/mensaje_general.js"></script>
 
  
 
@@ -148,15 +148,17 @@
 
   			let data_form = $('#form_paciente').serialize();
 
-  			$.post('/iess/archivos_php/gestion_datos/insert_paciente.php',data_form,function(data){
+  			$.post('../../archivos_php/gestion_datos/insert_paciente.php',data_form,function(data){
   				console.log(data);
   				if (data=='ok') {
-  					succes_refresh("Datos guardados correctamente","/iess/vistas/diagnostico/diagnostico");
-  				}else {
+  					succes_refresh("Datos guardados correctamente","../../vistas/diagnostico/diagnostico");
+  				}else if (data=="existe_1") {
+  				erro_message("Error historia duplicada");
+  				}	else {
   					erro_message("Error al guardar");
-  					
+  					 
   				}
-  			});
+  			}); 
   	 
   	}
   </script>

@@ -13,7 +13,7 @@ if (isset($_POST['id_paciente'])) {
 	$edad = $_POST['edad_paciente'];
 	$genero = $_POST['genero_paciente'];
 
-	
+
 
 	$sql = "UPDATE pacientes 
 	SET HIST_CLINICA=$historia_clinica ,NOM_PACIENTE='$nombre'  ,APELLIDO_PACIENTE='$apellido',EDAD=$edad ,GENERO='$genero'
