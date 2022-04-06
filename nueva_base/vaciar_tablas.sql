@@ -1,0 +1,13 @@
+DELETE FROM tecnicas;
+DELETE FROM tecnica_array;
+DELETE FROM tecnica_eplex;
+DELETE FROM tecnica_antibiograma;
+DELETE FROM notificaciones;
+DELETE FROM tincion_gram;
+DELETE FROM recepcion_muestra_emocultivo;
+DELETE FROM pedido_examen;
+DELETE FROM antibiotico__basado_en_antibiograma_manual;
+DELETE FROM diagnostico;
+DELETE FROM pacientes;
+DELETE FROM usuarios;
+DELETE FROM personal_medico;
