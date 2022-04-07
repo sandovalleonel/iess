@@ -96,7 +96,8 @@ if (!isset($usuario)){
 
 			function imprimir(){
 				
-				$.get('../../archivos_php/export_data/consulta_global.php', function(response) {
+				$.get('../../archivos_php/diagnostico/resumen.php', function(response) {
+					console.log(response)
 					data = JSON.parse(response);
 
 					plantilla = "";

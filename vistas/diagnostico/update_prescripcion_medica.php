@@ -37,29 +37,8 @@ if (!isset($usuario)){
 		include("menu.php"); 
 		?>
 
-		<?php
-		echo "<input type='hidden' id='medico' value='".$_SESSION['username']."' >";
-		if (isset($_SESSION['ss_id_paciente'])) {
-			echo "<input type='hidden' id='id_paciente' value='".$_SESSION['ss_id_paciente']."' >";
+	
 
-			$temp_paciente = $_SESSION['ss_paciente'];
-		}
-		if (isset($_SESSION['ss_id_diagnostico'])) {
-			echo "<input type='hidden' id='id_diagnostico' value='".$_SESSION['ss_id_diagnostico']."' >";
-			$temp_diagnostico = $_SESSION['ss_diagnostico'];
-		}
-		?>
-
-		<?php
-
-		if (isset($_GET['id_diag'])) {
-
-
-			echo "<input type='hidden' id='id_diagnostico' value='".$_GET['id_diag']."' >";
-			$temp_paciente = $_GET['pa'];
-			$temp_diagnostico = $_GET['diag'];
-		} 
-		?>
 
 
 		<div class="col-1">	</div>
@@ -69,7 +48,7 @@ if (!isset($usuario)){
 
 
 
-			<h6 class="text-center pt-3">FORMULARIO PRESCRIPCIÓN MÉDICA</h6>
+			<h6 class="text-center pt-3">ACTUALIZAR PRESCRIPCIÓN MÉDICA</h6>
 
 
 			<form action="" id="fomr_prescripcio">
@@ -78,16 +57,10 @@ if (!isset($usuario)){
 					<div class="col">
 						<label class="form-label">Paciente</label>
 						<input type="text" class="form-control" id="diagnostico_nombre_paciente" name="diagnostico_nombre_paciente"  disabled 
-						value="<?php if (isset($temp_paciente)) echo $temp_paciente; ?>
+						value="<?php echo $_GET['paciente'];?>
 						">
 						
 					</div>
-
-					<div class="col-12">
-						<label class="form-label">Diagnóstico</label>
-						<textarea class="form-control mb-3" id="diagnostico" rows="3" disabled > <?php if (isset($temp_diagnostico)) echo $temp_diagnostico;  ?>
-
-					</textarea>
 
 				</div>
 				<hr>
@@ -110,13 +83,8 @@ if (!isset($usuario)){
 				 <textarea class="form-control" id="comentario" rows="3"></textarea>
 				</div>
 
-				
-
-
-
-				</div>
 				<div class="col text-center">
-					<button class="btn btn-primary my-3" id="btn_guardar">Guardar</button>
+					<button class="btn btn-primary my-3" id="btn_guardar">Actualizar</button>
 
 				</div>
 
@@ -197,7 +165,7 @@ if (!isset($usuario)){
 				<hr>
 				<div class="col-4">
 					<label class="form-label">Fecha de Registro</label>
-					<input disabled type="date" class="form-control"  id="inicio"> </div>
+					<input type="date" class="form-control"  id="inicio"> </div>
 					<div class="col-4">
 						<label class="form-label">Tiempo (días)</label>
 						<input type="number" class="form-control" name="tiempo" id="tiempo" min="0" value="0" >

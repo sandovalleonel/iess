@@ -38,41 +38,16 @@ if (!isset($usuario)){
 		<div class="col-1">	</div>
 
 		<div class="col-xs-12 col-md-6  mt-5 shadow"  >
-			<div class="shadow p-2">
-				<div class="d-inline-block col-md-7">
-					<form id="form_buscar_paciente">
-						<div class="d-inline-block " style="width:60%;">
-						<input class="form-control "  type="text" name="buscar_paciente" id="buscar_paciente" placeholder="Ingrese apellido..">
-						</div>
-						<div class="d-inline-block" style="width:30%;">
-						<button class="btn btn-primary " id="diagnostico_cargar_combo" name="diagnostico_cargar_combo">Buscar</button>
-						</div>
-						
-					</form>
-				</div>
-				<div class="col-md-4 col-xs-12 col-sm-12  d-inline-block ">
-					<select class="form-select" style="background: #CECAC9;" name="diagnostico_paciente" id="diagnostico_paciente">
-					</select>
-				</div>
-			</div>
+			
 
-			<h6 class="text-center pt-3">FORMULARIO DIAGNÓSTICO</h6>
+			<h6 class="text-center pt-3">ACTUALIZAR DIAGNÓSTICO</h6>
 
 			<div class="container "> 
 				<form method="post" id="diagnostico_form">
 					<div>
-						<label class="form-label">Doctor</label>
-						<input class="form-control" type="text" name=""  value="<?php echo $usuario?>" disabled>
-						<input type="hidden" value="<?php echo $id_medico ?>" name="diagnostico_id_medico" id="diagnostico_id_medico" />
-					</div>
-					<div>
 						<label class="form-label">Paciente</label>
-						<input class="form-control mb-2" type="text" name="diagnostico_nombre_paciente" id="diagnostico_nombre_paciente" value=""  disabled />
-
-						<input type="hidden" name="paciente_name" id="paciente_name"/>
-
-						<input type="hidden" name="diagnostico_id_paciente" id="diagnostico_id_paciente" value="not_value">
-						<label id="diagnostico_nombre_paciente_error" style="display: none; color: red;" >Seleccione un paciente</label>
+						<input type="hidden" id="id_diagnostico" value="<?php echo $_GET['id_diagnostico'];?>" />
+						<input class="form-control mb-2" type="text" name="diagnostico_nombre_paciente" id="diagnostico_nombre_paciente" value="<?php echo $_GET['paciente'];?>"  disabled />
 					</div>
 					
 					<div>
@@ -80,6 +55,20 @@ if (!isset($usuario)){
 					<button class="btn btn-success" id="add">Add</button>
 					<div id="canvas">
 					</div>
+						<?php 
+							$enfermedades=explode(",",$_GET['enfermedades']);
+							
+							for ($i=0; $i < count($enfermedades); $i = $i+2) { 
+								$enf_id = $enfermedades[$i];
+								$enf_name = $enfermedades[$i+1];
+								$aux_i = $i + 999;
+								echo "<div id='ef$aux_i' class='pb-2'>
+										<input type='text' value='$enf_name' disabled name='enf_name[]' />
+										<input type='hidden' value='$enf_id' disabled name='enf[]'/>
+										<button class='del btn btn-danger' id = '$aux_i' >X</button>
+									  </div>";
+							}
+						?>
 					<br>
 					</div>
 
@@ -87,11 +76,10 @@ if (!isset($usuario)){
 
 					<div class="form-group">
 						<label class="form-label">Comentario</label>
-						<textarea   rows="4" class="form-control " name="diagnostico_descripcion" id="diagnostico_descripcion" ></textarea>
-						<label id="diagnostico_descripcion_error" style="display: none; color: red;" >Campo vacío</label>
+						<textarea   rows="4" class="form-control " name="diagnostico_descripcion" id="diagnostico_descripcion" ><?php echo $_GET['comentario'];?></textarea>
 					</div>
 					<div class="col text-center">				 
-						<button class="btn btn-primary my-3 " id="diagnostico_btn_crear">Crear</button>
+						<button class="btn btn-primary my-3 " id="diagnostico_btn_crear">Actualizar</button>
 					</div>
 				</form>
 
@@ -144,28 +132,6 @@ if (!isset($usuario)){
 	<script type="text/javascript" src="../../js/sweetalert2.all.min.js"></script>
 	<script type="text/javascript" src="../../js/mensaje_general.js"></script>
 
-	<script type="text/javascript">
-		function validacion_formulario(){
-			let cont = 0;
-			let mapa = new Map();
-			mapa.set("diagnostico_nombre_paciente",$('#diagnostico_nombre_paciente').val().trim().length);
-	
-
-			mapa.forEach((valor,clave)=> {
-				$('#'+clave).css("border", "1px solid #ced4da");
-				$('#'+clave+"_error").hide();
-				if (valor==0) {
-
-					$('#'+clave).css("border", "1px solid red");
-					$('#'+clave+"_error").show();
-					cont++;
-				}
-
-			});  
-			return cont;		
- 
-		}
-	</script>
 
 	<script type="text/javascript">
 		$(document).ready(function(){
@@ -175,41 +141,28 @@ if (!isset($usuario)){
 
 				let exite_enfermeddad = $.map($('input[type=hidden][name="enf[]"]'), function(el) { return el.value; });
 			 
-				
-				if (validacion_formulario()==0) {
-					if(exite_enfermeddad.length<1){
+				if(exite_enfermeddad.length<1){
 						alert("error, seleccione una enfermedad");
 						return;
 					}
-					//console.log('Listo para guardar');
 					gurdar();
-				}else {
-					console.log('Aun falta llenar datos');
-				}
-
 			});
 
   		//insertar con ajax
   		function gurdar() {
 			let enf =  $.map($('input[type=hidden][name="enf[]"]'), function(el) { return el.value; });
-			let enf_name =  $.map($('input[type=text][name="enf_name[]"]'), function(el) { return el.value; });
 
   			let data_form={
-  				diagnostico_id_paciente:$('#diagnostico_id_paciente').val(),
-  				diagnostico_id_medico:$('#diagnostico_id_medico').val(),
+				id_diagnostico:$('#id_diagnostico').val(),
   				diagnostico_descripcion:$('#diagnostico_descripcion').val(),
-  				paciente_name:$('#paciente_name').val(),
-				enfermedades_id:enf,
-				enfermedades_name:enf_name
-
+				enfermedades_id:enf
   			};
-  					 
-
-  			
-  			$.post('../../archivos_php/diagnostico/insertar_diagnostico.php',data_form,function(response){
+  				
+			  			
+  			$.post('../../archivos_php/diagnostico/update_diagnostico.php',data_form,function(response){
   				console.log(response);
   				if(response=='ok')
-  					succes_refresh("Formulario guardado correctamente","../../vistas/diagnostico/prescripcion_medica");	 
+  					succes_refresh("Formulario guardado correctamente","../../vistas/diagnostico/resumen_diagnostico");	 
   				else 
   					erro_message("Error al guardar");
   			});
@@ -223,56 +176,6 @@ if (!isset($usuario)){
   </script>
 
   <script type="text/javascript">
-
-
-  	$(document).on('click','#diagnostico_cargar_combo',function(e){
-
-
-  		e.preventDefault();
-  		const data_form ={
-  			apellido_paciente: $('#buscar_paciente').val()
-  		};
-  		;
-  		$.post('../../archivos_php/diagnostico/consultar_paciente.php',data_form,function(response){
-
-
-  			let lista_paciente = JSON.parse(response);
-  			let plantilla = '<option value="not_value" >Pacientes encontrados</option>';
-
-  			lista_paciente.forEach(usuario=>{
-  				plantilla+=`
-  				<option value="${usuario.id_paciente}">${usuario.nombre}</option>
-  				`;
-  			});
-
-  			$('#diagnostico_paciente').empty();
-  			$('#diagnostico_paciente').append(plantilla);
-
-  		});
-  	});
-
-
-  	$(document).on('change','#diagnostico_paciente',function(){
-
-  		if ($(this).val()=='not_value') { return;}
-  		$('#error_id_paciente').hide();
-
-  		var nombres=$('select[name="diagnostico_paciente"] option:selected').text();
-
-  		var id_paciente = $(this).val();
-  		$('#diagnostico_nombre_paciente').val(nombres);
-  		$('#paciente_name').val(nombres);
-  		$('#diagnostico_id_paciente').val(id_paciente);
-
-  		swal.close();
-  	});	 
-
-  </script>
-
-
-
-  <script type="text/javascript">
-
 
   	function cargar_enfermedad(codigo,etiqueta,op){
   		const data_form ={

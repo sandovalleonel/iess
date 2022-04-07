@@ -2,8 +2,8 @@
 #----------------------------------------------------------------------------------------------
 #----------------------------------------------------------------------------------------------
 
-#drop database iess;
-#create database iess;
+drop database iess;
+create database iess;
 
 CREATE TABLE IF NOT EXISTS `rol` (
  `CARGO` int(5) NOT NULL,
@@ -102,28 +102,46 @@ CREATE TABLE IF NOT EXISTS `antibiotico` (
 CREATE TABLE IF NOT EXISTS `antibiotico__basado_en_antibiograma_manual` (
   `ID_ANTIBIOTICO_BASADO_EN_ANTIBIOGRAMA_MANUAL` bigint(20) NOT NULL,
   `ID_DIAGNOSTICO` bigint(20) DEFAULT NULL,
+  `COMENTARIO` varchar(120) DEFAULT NULL,
 
-  `ANTIBIOTICO_1` varchar(120) DEFAULT NULL,
-  `DOSIS_1` varchar(120) NOT NULL,
-  `ANTIBIOTICO_2` varchar(120) DEFAULT NULL,
-  `DOSIS_2` varchar(120) NOT NULL,
-  `ANTIBIOTICO_3` varchar(120) DEFAULT NULL,
-  `DOSIS_3` varchar(120) NOT NULL,
+   PRIMARY KEY (ID_ANTIBIOTICO_BASADO_EN_ANTIBIOGRAMA_MANUAL),
+   INDEX(ID_DIAGNOSTICO),
+   FOREIGN KEY (ID_DIAGNOSTICO) REFERENCES diagnostico(ID_DIAGNOSTICO)
+   ON DELETE CASCADE
+  
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+CREATE TABLE IF NOT EXISTS `antibiotico_individual_completo` (
+  `id_antibiotico_individual` bigint(20) NOT NULL,
+  `ID_ANTIBIOTICO_BASADO_EN_ANTIBIOGRAMA_MANUAL` bigint(20) NOT NULL,
+  `ID_ANTIBIOTICO` bigint(20) DEFAULT NULL,
+
+  `DOSIS` varchar(120) DEFAULT NULL,
+  `unidad` varchar(120) DEFAULT NULL,
+  `via` varchar(120) DEFAULT NULL,
+  `metodo` varchar(120) DEFAULT NULL,
+
+  
   `INICIO` date NOT NULL,
-  `TIEMPO` int(11) NOT NULL,
+  `TIEMPO` int(5) NOT NULL,
   `FIN` date NOT NULL,
   
   `ESCALA` varchar(30) NOT NULL,
   `MANTIENE` varchar(30) NOT NULL,
   `DESCALA` varchar(30) NOT NULL,
   `AJUSTE_DOSIS` varchar(30) NOT NULL,
-   PRIMARY KEY (ID_ANTIBIOTICO_BASADO_EN_ANTIBIOGRAMA_MANUAL),
-   INDEX(ID_DIAGNOSTICO),
-  FOREIGN KEY (ID_DIAGNOSTICO) REFERENCES diagnostico(ID_DIAGNOSTICO)
-  ON DELETE CASCADE
+  PRIMARY KEY (id_antibiotico_individual),
+  INDEX(ID_ANTIBIOTICO_BASADO_EN_ANTIBIOGRAMA_MANUAL),
+  INDEX(ID_ANTIBIOTICO),
+  FOREIGN KEY (ID_ANTIBIOTICO_BASADO_EN_ANTIBIOGRAMA_MANUAL) REFERENCES antibiotico__basado_en_antibiograma_manual(ID_ANTIBIOTICO_BASADO_EN_ANTIBIOGRAMA_MANUAL)
+  ON DELETE CASCADE,
+  FOREIGN KEY (ID_ANTIBIOTICO) REFERENCES antibiotico(ID_ANTIBIOTICO)
+
   
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+
 
 
 CREATE TABLE IF NOT EXISTS `pedido_examen` (
@@ -302,6 +320,8 @@ INSERT INTO `usuarios` (`ID_USUARIO`, `ID_PERSONALMEDICO`, `USUARIO`, `PASSWORD`
 	VALUES ('115', '50', '4444444444', '21232F297A57A5A743894A0E4A801FC3' , '2022-03-09');
 
 
+
+INSERT INTO `pacientes`(`ID_PACIENTE`, `HIST_CLINICA`, `NOM_PACIENTE`, `APELLIDO_PACIENTE`, `EDAD`, `GENERO`) VALUES (123,333,'Marco','Pupiales',23,'Masculino');
 
 
 

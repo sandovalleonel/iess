@@ -4,13 +4,13 @@ session_start();
 $id_med=$_SESSION['id_medico'];
 require '../../conexion_base/conexion_base.php';
 
-		$sql = "SELECT (SELECT concat(pa.NOM_PACIENTE,' ',pa.APELLIDO_PACIENTE) FROM pacientes pa WHERE pa.ID_PACIENTE=d.ID_PACIENTE) ,
-d.ID_DIAGNOSTICO,d.ID_DIAGNOSTICO,
-( SELECT GROUP_CONCAT(enfermedad.NOM_ENFERMEDAD) from enf_diag, enfermedad WHERE  enf_diag.ID_DIAGNOSTICO=d.ID_DIAGNOSTICO AND enfermedad.ID_ENFERMEDAD=enf_diag.ID_ENFERMEDAD GROUP by enf_diag.ID_DIAGNOSTICO)
-,
-d.DIAGNOSTICO_COMENTARIO,d.FECHA_DIAGNOSTICO,
-abam.ID_ANTIBIOTICO_BASADO_EN_ANTIBIOGRAMA_MANUAL, abam.ANTIBIOTICO_1, abam.DOSIS_1, abam.ANTIBIOTICO_2, abam.DOSIS_2,abam.ANTIBIOTICO_3,abam.DOSIS_3, abam.INICIO,abam.TIEMPO,abam.FIN,abam.ESCALA,abam.MANTIENE,abam.DESCALA,abam.AJUSTE_DOSIS,
-px.ID_PEDIDO_EXAMEN,px.TIPO_EXAMEN,px.FECHA_PEDIDO
+		$sql = "SELECT 
+		(SELECT concat(pa.NOM_PACIENTE,' ',pa.APELLIDO_PACIENTE)FROM pacientes pa WHERE pa.ID_PACIENTE=d.ID_PACIENTE) ,
+		(SELECT pa.HIST_CLINICA FROM pacientes pa WHERE pa.ID_PACIENTE=d.ID_PACIENTE) ,
+		
+		d.ID_DIAGNOSTICO,d.DIAGNOSTICO_COMENTARIO,d.FECHA_DIAGNOSTICO,
+		abam.ID_ANTIBIOTICO_BASADO_EN_ANTIBIOGRAMA_MANUAL, 
+		px.ID_PEDIDO_EXAMEN,px.TIPO_EXAMEN,px.FECHA_PEDIDO
 		
 		FROM
 		diagnostico d
@@ -29,43 +29,78 @@ px.ID_PEDIDO_EXAMEN,px.TIPO_EXAMEN,px.FECHA_PEDIDO
 	if (!$resultado) {
 		die("Error consultas").mysqli_error($conexion);
 	}
+
+
+	
+
 	$json = array();
 	while($row = mysqli_fetch_array($resultado)){
- 
+
+		$sql_enfermedades = "SELECT eg.ID_ENFERMEDAD, e.NOM_ENFERMEDAD
+							FROM enf_diag eg, enfermedad e
+							WHERE eg.ID_ENFERMEDAD = e.ID_ENFERMEDAD AND eg.ID_DIAGNOSTICO = $row[2]";
+		$resultado_enfermedades = mysqli_query($conexion ,$sql_enfermedades);
+		$enfermedades = array();
+		while($row_enfermedades = mysqli_fetch_array($resultado_enfermedades)){ 
+			$enfermedades[] = array(
+				'id_enfermedad' => $row_enfermedades[0],
+				'enfermedad' => $row_enfermedades[1]
+			);
+		}
+
+
+		$sql_ant = "SELECT * FROM  antibiotico_individual_completo aic ,antibiotico a 
+							WHERE aic.ID_ANTIBIOTICO = a.ID_ANTIBIOTICO AND aic.ID_ANTIBIOTICO_BASADO_EN_ANTIBIOGRAMA_MANUAL = $row[5]";
+
+		$resultado_ant = mysqli_query($conexion ,$sql_ant);
+		$ant = array();
+		while($row_ant = mysqli_fetch_array($resultado_ant)){ 
+			$ant[] = array(
+				'a1' => $row_ant[0],
+				'a2' => $row_ant[1],
+				'a3' => $row_ant[2],
+				'a4' => $row_ant[3],
+				'a5' => $row_ant[4],
+				'a6' => $row_ant[5],
+				'a7' => $row_ant[6],
+				'a8' => $row_ant[7],
+				'a9' => $row_ant[8],
+				'a10' => $row_ant[9],
+				'a11' => $row_ant[10],
+				'a12' => $row_ant[11],
+				'a13' => $row_ant[12],
+				'a14' => $row_ant[13],
+				'a15' => $row_ant[14],
+				'a16' => $row_ant[15]
+			);
+		}
+
+
+		
+		
+
 		$json[] = array(
 			
 			'nombre_paciente' => $row[0],
-			'id_diagnostico'=>$row[1],
-			'enfermedad_1' => $row[2],
-			'enfermedad_2'=>$row[3],
-			'comentario' => $row[4],
-			'fecha_diagnostico' => $row[5],
+			'historia_clinica' => $row[1],
+
+			'id_diagnostico'=>$row[2],
+			'enfermedades' => $enfermedades,
+			'comentario_diagnostico' => $row[3],
+			'fecha_diagnostico' => $row[4],
 
 
-			'id_prescripcion' => $row[6],
-			'antibiotico_1' => $row[7],
-			'dosis_1' => $row[8],
-			'antibiotico_2' => $row[9],
-			'dosis_2' => $row[10],
-			'antibiotico_3' => $row[11],
-			'dosis_3' => $row[12],
-			'inicio' => $row[13],
-			'tiempo' => $row[14],
-			'fin' => $row[15],
-			'escala' => $row[16],
-			'mantiene' => $row[17],
-			'descala' => $row[18],
-			'ajuste_dosis' => $row[19],
+			'id_prescripcion' => $row[5],
+			'antibioticos' => $ant,
 
 
-			'id_pedido_examen' => $row[20],
-			'tipo_examen' => $row[21],
-			'fecha_examen' => $row[22]
-
-
+			'id_pedido_examen' => $row[6],
+			'tipo_examen' => $row[7],
+			'fecha_examen' => $row[8]
 
 			
 		);
+
 			
 
 	}

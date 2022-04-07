@@ -139,9 +139,6 @@ if (isset($_SESSION['ss_id_paciente'])) {
 			</div>
 
 
-	
-
-
 			
 
 
@@ -165,114 +162,156 @@ if (isset($_SESSION['ss_id_paciente'])) {
 							type: 'GET',
 
 							success: function(data) {
-					//console.log(data);
-					let lista_general = JSON.parse(data);
-					let plantilla = '';
+		  	//console.log(data);
+		  	let lista_general = JSON.parse(data);
+		  	let plantilla = '';
 
-					lista_general.forEach(usuario=>{
+		  	lista_general.forEach(usuario=>{
+				let aux_enf = (usuario.enfermedad_2 == null)?"":usuario.enfermedad_2;
+ 
+		  		plantilla+=`
 
-						
-						enfermedades = "";
-						enfermedades_na_format = "";
-						enfermedadeswhitid = [];
-						cont = 0;
-						for (let index = 0; index < usuario.enfermedades.length; index++) {
-							enfermedades+="-"+usuario.enfermedades[index].enfermedad+" <br> ";	
-							enfermedades_na_format += usuario.enfermedades[index].enfermedad+", ";	
-							enfermedadeswhitid[cont] = usuario.enfermedades[index].id_enfermedad;
-							enfermedadeswhitid[cont+1] = usuario.enfermedades[index].enfermedad;
-							cont = cont+2;
-						}
+		  		<tr id_lista_usurios="${usuario.id_prescripcion}" >
 
+		  		<td >
+		  		${usuario.nombre_paciente}
 
+		  		</td>
 
-						antibioticos = "";
-						for (let index = 0; index < usuario.antibioticos.length; index++) {
-							antibioticos+="-"+usuario.antibioticos[index].a1+" <br> ";	
-						}
-		
+		  		<td>
+		  		${usuario.id_diagnostico}<br>		  		
+		  		
+		  		<strong>Enfermedades: </strong> ${aux_enf}
+		  		<br>
+		  		<strong>Comentario:</strong> ${usuario.comentario}
+		  		<br>
+		  		<strong>Fecha:</strong> ${usuario.fecha_diagnostico}
 
 
-
-						plantilla+=`
-
-						<tr id_lista_usurios="${usuario.id_prescripcion}" >
-
-						<td >
-						${usuario.nombre_paciente}
-						( ${usuario.historia_clinica} )
-						</td>
-						<td>
-							${usuario.id_diagnostico}<br>
-							<strong>Enfermedades: </strong><br> ${enfermedades}
-							<strong>Fecha:</strong> ${usuario.fecha_diagnostico}<br>
-							<strong>Comentario:</strong> ${usuario.comentario_diagnostico}<br>
-							<a class="update_diagnostico" href="update_diagnostico?id_diagnostico=${usuario.id_diagnostico}&paciente=${usuario.nombre_paciente}&comentario=${usuario.comentario_diagnostico}&enfermedades=${enfermedadeswhitid}" class=" "><img src="../../imagenes/update.png"/></a>
-							
-						</td>	
-						`;
-						if (usuario.id_prescripcion==null ){
-
-							plantilla+=`
-								<td></td>
-								<td></td>
-								<td> <a href="prescripcion_medica?id_diag=${usuario.id_diagnostico}&diag=${enfermedades_na_format}&pa=${usuario.nombre_paciente}" class="btn btn-primary"> Crear prescipcion</a> </td>
-								`;   
-						}else	if (usuario.id_prescripcion!=null && usuario.id_pedido_examen==null ) {
-							plantilla+=`
-							
-							<td>
-							${antibioticos}
-							
-							LLenar prescripcion<br>
-							<a class="update_prescripcion" href="update_prescripcion_medica?id_prescripcion=test&paciente=${usuario.nombre_paciente}" class=" "><img src="../../imagenes/update.png"/></a>
-							
-							</td>
-							<td></td>	
-							<td><button class="btn btn-primary btn_pedir_examen my-1">Pedir Examen</button>	 </td>
-							
-							`;
-							
-						}else if (usuario.id_pedido_examen!=null ) {
-							plantilla+=`
-								<td>
-								Duplicar el codigo de arriba
-								
-								</td>	
-								<td>
-								${usuario.id_pedido_examen}<br>
-								<strong>Tipo: </strong>${usuario.tipo_examen}<br>
-								<strong>Fecha: </strong>${usuario.fecha_examen}<br>
-								</td>	
-								<td>Terminado</td>`;
-						}
-						
+		  		</td>	
+		  		`;
 
 
-						
+		  		if (usuario.id_prescripcion==null) {
+		  			plantilla+=`<td></td>`
+		  		}else {
+		  			plantilla+=`
+		  			
+		  			<td>
+		  			${usuario.id_prescripcion}<br><br>
+
+		  			<label style="cursor:pointer; cursor: hand;" onClick="desplegar('${usuario.id_prescripcion}','estadoT')" ><strong><u>Ver más..[+] </u></strong></label> <br>
+
+		  			<div  id='${usuario.id_prescripcion}' style="display: none;"> 
+
+		  			<strong>Antbióticos:</strong> <br>
+		  			<strong>*</strong>${usuario.antibiotico_1}  [ ${usuario.dosis_1}]<br>
+		  			<strong>*</strong>${usuario.antibiotico_2}  [${usuario.dosis_2}]<br>
+		  			<strong>*</strong>${usuario.antibiotico_3}  [${usuario.dosis_3}]<br>
+
+		  			<strong>F_inicio:</strong> ${usuario.inicio}
+		  			<br>
+		  			<strong>Tiempo(días):</strong> ${usuario.tiempo}
+		  			<br>
+		  			<strong>F_fin:</strong> ${usuario.fin}
+		  			<br>
+		  			<strong>Escala:</strong> ${usuario.escala}
+		  			<br>
+		  			<strong>Mantiene:</strong> ${usuario.mantiene}
+		  			<br>
+		  			<strong>Descala</strong> ${usuario.descala}
+		  			<br>
+		  			<strong>Ajuste dosis::</strong> ${usuario.ajuste_dosis}
+		  			
+		  			</div>
+
+		  			</td>`;
+		  		}
+
+
+		  		if (usuario.id_pedido_examen==null) {
+		  			plantilla+=`<td></td>`
+		  		}else {
+		  			plantilla+=`
+		  			<td>
+		  			${usuario.id_pedido_examen}<br>
+		  			<strong>Tipo:</strong>${usuario.tipo_examen}
+		  			<br>
+		  			<strong>Fecha: </strong>${usuario.fecha_examen}
+		  			</td>`;
+		  		}
+
+
+		  		if (usuario.id_prescripcion==null) {
+					  
+		  			plantilla+=`
+
+		  			<td> 
+		  			<form method="post" action="/iess/vistas/diagnostico/prescripcion_medica">
+		  			<input type="hidden" name="id_diag" value="${usuario.id_diagnostico}">
+		  			<input type="hidden" name="diag" value="${usuario.enfermedad_2}">
+		  			<input type="hidden" name="pa" value="${usuario.nombre_paciente}">
+
+		  			<button class="btn btn-info btn_crear_prescripcion my-1">Crear Prescrición</button>	
+		  			</form>
+		  			</td>`
+		  		}
+		  		if (usuario.id_prescripcion!=null &&  usuario.id_pedido_examen==null) {
+		  			plantilla+=`
+
+
+		  			<td> 
+		  			<form method="post" action="/iess/vistas/diagnostico/prescripcion_medica">
+		  			<input type="hidden" name="id_diag" value="${usuario.id_diagnostico}">
+		  			<input type="hidden" name="diag" value=" ${usuario.enfermedad_2}">
+
+		  			<input type="hidden" name="pa" value="${usuario.nombre_paciente}">
+		  			<button class="btn btn-info btn_crear_prescripcion my-1">Nueva prescrición</button>	
+		  			</form>	
+		  			<br>
+		  			<button class="btn btn-info btn_pedir_examen my-1">Pedir Examen</button>	
+		  			</td>`
+		  		}
+
+		  		if (usuario.id_prescripcion!=null &&  usuario.id_pedido_examen!=null) {
+		  			plantilla+=`
+
+
+		  			<td> 
+		  			<form method="post" action="/iess/vistas/diagnostico/prescripcion_medica">
+		  			<input type="hidden" name="id_diag" value="${usuario.id_diagnostico}">
+		  			<input type="hidden" name="diag" value="${usuario.enfermedad_2}">
+		  			<input type="hidden" name="id_pa" value="${usuario.id_paciente}">
+		  			<input type="hidden" name="pa" value="${usuario.nombre_paciente}">
+
+		  			<button class="btn btn-info btn_crear_prescripcion my-1">Nueva Prescrición</button>	
+		  			</form>	
+
+		  			</td>`
+		  		}
 
 
 
-						
 
-						
 
-						plantilla+=`</tr>`;
 
-					});
-					$('#usuario_admin').html(plantilla);
-				}
+
+		  		plantilla+=`</tr>`;
+
+		  	});
+		  	$('#usuario_admin').html(plantilla);
+		  }
+
+		});
+
+					}
+
+
+
+
+
 
 				});
-
-							}
-
-
-
-
-
-
-						});
 
 			</script>
 
@@ -362,8 +401,6 @@ if (isset($_SESSION['ss_id_paciente'])) {
 				}
 			</script>
 
-
-<!--######################################################################-->
 
 		</body>
 		</html>

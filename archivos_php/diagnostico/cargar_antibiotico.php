@@ -18,13 +18,10 @@ require '../../conexion_base/conexion_base.php';
 	while($row = mysqli_fetch_array($resultado)){
 		 
 			 
-			$combo_antibiotico .= "<option> $row[1] </option>";
+			$combo_antibiotico .= "<option value='$row[0]'> $row[1] </option>";
 			
 	
 	}
-
-	$combo_opcional = "<option></option>";
-	$combo_opcional .= $combo_antibiotico;
 
 
 ?>
