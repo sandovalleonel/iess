@@ -59,19 +59,19 @@ require '../../conexion_base/conexion_base.php';
 				'a1' => $row_ant[0],
 				'a2' => $row_ant[1],
 				'a3' => $row_ant[2],
-				'a4' => $row_ant[3],
-				'a5' => $row_ant[4],
-				'a6' => $row_ant[5],
-				'a7' => $row_ant[6],
-				'a8' => $row_ant[7],
-				'a9' => $row_ant[8],
-				'a10' => $row_ant[9],
-				'a11' => $row_ant[10],
-				'a12' => $row_ant[11],
-				'a13' => $row_ant[12],
-				'a14' => $row_ant[13],
-				'a15' => $row_ant[14],
-				'a16' => $row_ant[15]
+				'dosis' => $row_ant[3],
+				'unidad' => $row_ant[4],
+				'via' => $row_ant[5],
+				'metodo' => $row_ant[6],
+				'inicio' => $row_ant[7],
+				'dias' => $row_ant[8],
+				'fin' => $row_ant[9],
+				'escala' => $row_ant[10],
+				'mantiene' => $row_ant[11],
+				'descala' => $row_ant[12],
+				'ajuste' => $row_ant[13],
+				'id_antibiotico' => $row_ant[14],
+				'antibiotico_nombre' => $row_ant[15]
 			);
 		}
 
