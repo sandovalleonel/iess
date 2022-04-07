@@ -52,6 +52,7 @@ require '../../conexion_base/conexion_base.php';
 		$sql_ant = "SELECT * FROM  antibiotico_individual_completo aic ,antibiotico a 
 							WHERE aic.ID_ANTIBIOTICO = a.ID_ANTIBIOTICO AND aic.ID_ANTIBIOTICO_BASADO_EN_ANTIBIOGRAMA_MANUAL = $row[5]";
 
+
 		$resultado_ant = mysqli_query($conexion ,$sql_ant);
 		$ant = array();
 		while($row_ant = mysqli_fetch_array($resultado_ant)){ 
