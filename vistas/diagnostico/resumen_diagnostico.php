@@ -5,9 +5,6 @@ if (!isset($usuario)){
 	header("location: ../../index.php");
 }
 
-
-
-
 ?>
 
 
