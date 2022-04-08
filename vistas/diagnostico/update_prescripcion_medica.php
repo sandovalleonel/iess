@@ -57,8 +57,8 @@ if (!isset($usuario)){
 					<div class="col">
 						<label class="form-label">Paciente</label>
 						<input type="text" class="form-control" id="diagnostico_nombre_paciente" name="diagnostico_nombre_paciente"  disabled 
-						value="<?php echo $_GET['paciente'];?>
-						">
+						value="<?php echo $_GET['paciente'];?>">
+						<input type="hidden" id="id_prescripcion" value="<?php echo $_GET['id_prescripcion'];?>"/>
 						
 					</div>
 
@@ -71,7 +71,59 @@ if (!isset($usuario)){
 					
 					<button class="btn btn-success" id="add">Add</button>
 					<div id="canvas_ant">
-					<label class="form-label text-center  d-block">Antibióticos	</label>	
+					<label class="form-label text-center  d-block">Antibióticos	</label>
+					
+					<?php 
+					$aux = $_GET['antibiotico'];
+					$antibioticos = explode(",",$aux);
+					
+					$cont = 50;
+					for ($i=0; $i < count($antibioticos) ; $i=$i+13) { 
+						$id_ant = $antibioticos[$i];
+						$ant_nombre = $antibioticos[($i+1)];
+						$dosis = $antibioticos[($i+2)];
+						$unidad = $antibioticos[($i+3)];
+						$via = $antibioticos[($i+4)];
+						$metodo = $antibioticos[($i+5)];
+						$inicio = $antibioticos[($i+6)];
+						$dias = $antibioticos[($i+7)];
+						$fin = $antibioticos[($i+8)];
+						$escala = $antibioticos[($i+9)];
+						$mantiene = $antibioticos[($i+10)];
+						$descala = $antibioticos[($i+11)];
+						$ajuste = $antibioticos[($i+12)];
+						echo "
+								<div id='ant$cont' class='pb-2'>
+								<label class='bg-warning d-block'>
+									<strong>Antibiótico:</strong> $ant_nombre<br>
+									<strong>Dosis:</strong> $dosis,	<strong>Unidad:</strong> $unidad,	<strong>Vía:</strong> $via,	<strong>Método:</strong> $metodo<br>
+									<strong>Fecha:</strong> $inicio,    $dias <strong>días</strong>,   $fin<br>
+									<strong>Escala:</strong> $escala, <strong>Mantien:</strong> $mantiene,	<strong>Descala:</strong> $descala,	<strong>Ajuste:</strong> $ajuste	
+								</label>
+								<button class='del btn btn-danger' id =$cont>X</button>
+							  </div>
+						";
+
+						echo "
+								<div>
+									<input type='hidden' name=dat[] value='$cont'/>
+									<input type='hidden' name=dat[] value='$id_ant'/>
+									<input type='hidden' name=dat[] value='$dosis'/>
+									<input type='hidden' name=dat[] value='$unidad'/>
+									<input type='hidden' name=dat[] value='$via'/>
+									<input type='hidden' name=dat[] value='$metodo'/>
+									<input type='hidden' name=dat[] value='$inicio'/>
+									<input type='hidden' name=dat[] value='$dias'/>
+									<input type='hidden' name=dat[] value='$fin'/>
+									<input type='hidden' name=dat[] value='$escala'/>
+									<input type='hidden' name=dat[] value='$mantiene'/>
+									<input type='hidden' name=dat[] value='$descala'/>
+									<input type='hidden' name=dat[] value='$ajuste'/>
+								</div>
+							";
+						$cont++;
+					}
+					?>
 					</div>
 					<br>
 				</div>
@@ -80,7 +132,7 @@ if (!isset($usuario)){
 
 				<div class="col-12">
 			     <label class="form-label">Comentarios</label>
-				 <textarea class="form-control" id="comentario" rows="3"></textarea>
+				 <textarea class="form-control" id="comentario" rows="3"><?php echo $_GET['comentario'];?></textarea>
 				</div>
 
 				<div class="col text-center">
@@ -228,6 +280,7 @@ if (!isset($usuario)){
 
 
 	<script type="text/javascript">
+
 	//insertar prescripcion
 	//validar no vacio
 
@@ -236,22 +289,23 @@ if (!isset($usuario)){
 
 	$(document).on('click','#btn_guardar',function(e){
 		e.preventDefault();
-	
-		if (!$('#id_diagnostico').length) {
-			erro_message("Error: Selecione un diagnóstico en el menú resumen");
-			return;
-		}else if (Object.keys(data_form_global).length <= 0) {
+		//console.log(data_form_global)
+
+		
+
+		if (Object.keys(data_form_global).length <= 0) {
 			erro_message("Error: Selecione almenos una antibiótico");
 			return;
 		}
 
 		
-		data_form_global.push({"id":999,"id_diag":$('#id_diagnostico').val(),"comentrio":$('#comentario').val()	});
+		data_form_global.push({"id":999,"id_ant":$('#id_prescripcion').val(),"comentario":$('#comentario').val()});
 		
 		//console.log(data_form_global)
+		
 		var aux_data = JSON.stringify(data_form_global);
 		
-		$.post("../../archivos_php/diagnostico/ingresar_prescripcion.php",{myData:aux_data},function(response){
+		$.post("../../archivos_php/diagnostico/update_prescripcion.php",{myData:aux_data},function(response){
 			
 			console.log(response);
 			if (response=='ok') {
@@ -414,6 +468,35 @@ if (!isset($usuario)){
 </script>
 
 
+<script type="text/javascript">
+cargar_prescripcion_old();
+function cargar_prescripcion_old(){
 
+			let data = $.map($('input[type=hidden][name="dat[]"]'), function(el) { return el.value; });
+
+			for (let index = 0; index < data.length; index= index+13) {
+				data_form_global.push({
+								"id":data[index],
+								"id_ant":data[index+1],
+								"dosis":data[index+2],
+								"unidad":data[index+3],
+								"via":data[index+4],
+								"metodo":data[index+5],
+								"inicio":data[index+6],
+								"tiempo":data[index+7],
+								"fin":data[index+8],
+								"escala":data[index+9],
+								"mantiene":data[index+10],
+								"descala":data[index+11],
+								"ajuste":data[index+12]
+							
+							});
+
+			}
+			
+
+	}
+
+</script>
 </body>
 </html>

@@ -56,7 +56,7 @@ if (isset($_SESSION['ss_id_paciente'])) {
 
 
 				<!-- Formulario 1*****************************************-->
-				<div class="col-9 	mt-1 shadow" style="width: 82%; height: 580px; overflow-y: scroll; " >
+				<div class="col-9 	mt-1 shadow" style="width: 82%; height: 640px; overflow-y: scroll; " >
 
 					<div class="col-5 pb-3 pt-0">
 						<input type="text" id="buscar_admin" class="form-control rounded" placeholder="Buscar" aria-label="Search"	aria-describedby="search-addon" />
@@ -67,7 +67,7 @@ if (isset($_SESSION['ss_id_paciente'])) {
 				//include( $_SERVER['DOCUMENT_ROOT']."/iess/archivos_php/diagnostico/resumen.php");
 					?>	
 
-					<table class=" table table-bordered ">
+					<table class=" table  table-striped">
 						<thead>
 							<tr>
 								<th>DATOS PERSONALES</th>
@@ -172,7 +172,7 @@ if (isset($_SESSION['ss_id_paciente'])) {
 						enfermedades = "";
 						enfermedades_na_format = "";
 						enfermedadeswhitid = [];
-						cont = 0;
+						let cont = 0;
 						for (let index = 0; index < usuario.enfermedades.length; index++) {
 							enfermedades+="-"+usuario.enfermedades[index].enfermedad+" <br> ";	
 							enfermedades_na_format += usuario.enfermedades[index].enfermedad+", ";	
@@ -181,11 +181,41 @@ if (isset($_SESSION['ss_id_paciente'])) {
 							cont = cont+2;
 						}
 
-
+ 
 
 						antibioticos = "";
+						antibioticosWhithID = [];
+						let contador = 0; 
 						for (let index = 0; index < usuario.antibioticos.length; index++) {
-							antibioticos+="-"+usuario.antibioticos[index].a1+" <br> ";	
+							antibioticos+="<strong>Antibiotico: </strong>"+usuario.antibioticos[index].antibiotico_nombre+" <br> ";
+							antibioticos+="<strong>Dosis: </strong>"+usuario.antibioticos[index].dosis+" <br> ";
+							antibioticos+="<strong>Unidad: </strong>"+usuario.antibioticos[index].unidad+" <br> ";
+							antibioticos+="<strong>Vía: </strong>"+usuario.antibioticos[index].via+" <br> ";	
+							antibioticos+="<strong>Método: </strong>"+usuario.antibioticos[index].metodo+" <br> ";
+							antibioticos+=""+usuario.antibioticos[index].inicio+" ";
+							antibioticos+=" ("+usuario.antibioticos[index].dias+" días) ";
+							antibioticos+=""+usuario.antibioticos[index].fin+" <br> ";
+							antibioticos+="<strong>Escala: </strong>"+usuario.antibioticos[index].escala+"  ";
+							antibioticos+="<strong>Mantiene: </strong>"+usuario.antibioticos[index].mantiene+"  ";
+							antibioticos+="<strong>Descala: </strong>"+usuario.antibioticos[index].descala+"  ";
+							antibioticos+="<strong>Ajuste: </strong>"+usuario.antibioticos[index].ajuste+"<hr>";
+
+							antibioticosWhithID[contador] = usuario.antibioticos[index].id_antibiotico;
+							antibioticosWhithID[contador+1] = usuario.antibioticos[index].antibiotico_nombre;
+							antibioticosWhithID[contador+2] = usuario.antibioticos[index].dosis;
+							antibioticosWhithID[contador+3] = usuario.antibioticos[index].unidad;
+							antibioticosWhithID[contador+4] = usuario.antibioticos[index].via;
+							antibioticosWhithID[contador+5] = usuario.antibioticos[index].metodo;
+							antibioticosWhithID[contador+6] = usuario.antibioticos[index].inicio;
+							antibioticosWhithID[contador+7] = usuario.antibioticos[index].dias;
+							antibioticosWhithID[contador+8] = usuario.antibioticos[index].fin;
+							antibioticosWhithID[contador+9] = usuario.antibioticos[index].escala;
+							antibioticosWhithID[contador+10] = usuario.antibioticos[index].mantiene;
+							antibioticosWhithID[contador+11] = usuario.antibioticos[index].descala;
+							antibioticosWhithID[contador+12] = usuario.antibioticos[index].ajuste;
+
+							contador = contador + 13;
+
 						}
 		
 
@@ -219,10 +249,17 @@ if (isset($_SESSION['ss_id_paciente'])) {
 							plantilla+=`
 							
 							<td>
-							${antibioticos}
+							${usuario.id_prescripcion}<br>
+							<label style="cursor:pointer; cursor: hand;" onClick="desplegar('${usuario.id_prescripcion}','estadoT')" ><strong><u>Ver más..[+] </u></strong></label> <br>
+							<div  id='${usuario.id_prescripcion}' style="display: none;"> 
+								${antibioticos}
+							</div>
+							<br>
+							<strong>Comentario: </strong>${usuario.comentario_prescripcion}
+
 							
-							LLenar prescripcion<br>
-							<a class="update_prescripcion" href="update_prescripcion_medica?id_prescripcion=test&paciente=${usuario.nombre_paciente}" class=" "><img src="../../imagenes/update.png"/></a>
+							<br>
+							<a class="update_prescripcion" href="update_prescripcion_medica?id_prescripcion=${usuario.id_prescripcion}&paciente=${usuario.nombre_paciente}&antibiotico=${antibioticosWhithID}&comentario=${usuario.comentario_prescripcion}" class=" "><img src="../../imagenes/update.png"/></a>
 							
 							</td>
 							<td></td>	
@@ -233,8 +270,19 @@ if (isset($_SESSION['ss_id_paciente'])) {
 						}else if (usuario.id_pedido_examen!=null ) {
 							plantilla+=`
 								<td>
-								Duplicar el codigo de arriba
-								
+									${usuario.id_prescripcion}<br>
+									<label style="cursor:pointer; cursor: hand;" onClick="desplegar('${usuario.id_prescripcion}','estadoT')" ><strong><u>Ver más..[+] </u></strong></label> <br>
+									<div  id='${usuario.id_prescripcion}' style="display: none;"> 
+										${antibioticos}
+									</div>
+									<br>
+									<strong>Comentario: </strong>${usuario.comentario_prescripcion}
+
+									
+									<br>
+									<a class="update_prescripcion" href="update_prescripcion_medica?id_prescripcion=${usuario.id_prescripcion}&paciente=${usuario.nombre_paciente}&antibiotico=${antibioticosWhithID}&comentario=${usuario.comentario_prescripcion}" class=" "><img src="../../imagenes/update.png"/></a>
+									
+										
 								</td>	
 								<td>
 								${usuario.id_pedido_examen}<br>

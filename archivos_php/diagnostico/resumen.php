@@ -1,5 +1,5 @@
 <?php
-
+ 
 session_start();
 $id_med=$_SESSION['id_medico'];
 require '../../conexion_base/conexion_base.php';
@@ -9,7 +9,7 @@ require '../../conexion_base/conexion_base.php';
 		(SELECT pa.HIST_CLINICA FROM pacientes pa WHERE pa.ID_PACIENTE=d.ID_PACIENTE) ,
 		
 		d.ID_DIAGNOSTICO,d.DIAGNOSTICO_COMENTARIO,d.FECHA_DIAGNOSTICO,
-		abam.ID_ANTIBIOTICO_BASADO_EN_ANTIBIOGRAMA_MANUAL, 
+		abam.ID_ANTIBIOTICO_BASADO_EN_ANTIBIOGRAMA_MANUAL, abam.COMENTARIO,
 		px.ID_PEDIDO_EXAMEN,px.TIPO_EXAMEN,px.FECHA_PEDIDO
 		
 		FROM
@@ -93,11 +93,12 @@ require '../../conexion_base/conexion_base.php';
 
 			'id_prescripcion' => $row[5],
 			'antibioticos' => $ant,
+			'comentario_prescripcion' => $row[6],
 
 
-			'id_pedido_examen' => $row[6],
-			'tipo_examen' => $row[7],
-			'fecha_examen' => $row[8]
+			'id_pedido_examen' => $row[7],
+			'tipo_examen' => $row[8],
+			'fecha_examen' => $row[9]
 
 			
 		);
