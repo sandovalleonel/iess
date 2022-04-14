@@ -38,7 +38,7 @@ require '../../conexion_base/conexion_base.php';
 
 		$sql_enfermedades = "SELECT eg.ID_ENFERMEDAD, e.NOM_ENFERMEDAD
 							FROM enf_diag eg, enfermedad e
-							WHERE eg.ID_ENFERMEDAD = e.ID_ENFERMEDAD AND eg.ID_DIAGNOSTICO = $row[2]";
+							WHERE eg.ID_ENFERMEDAD = e.ID_ENFERMEDAD AND eg.ID_DIAGNOSTICO = $row[2] AND ESTADO = 1";
 		$resultado_enfermedades = mysqli_query($conexion ,$sql_enfermedades);
 		$enfermedades = array();
 		while($row_enfermedades = mysqli_fetch_array($resultado_enfermedades)){ 
@@ -47,37 +47,37 @@ require '../../conexion_base/conexion_base.php';
 				'enfermedad' => $row_enfermedades[1]
 			);
 		}
+////////////--------------------------------------------------------------------------
+			$ant="";
+			if($row[5] != null){
+					$sql_ant = "SELECT aic.ID_ANTIBIOTICO,a.NOMBRE_ANTIBIOTICO,aic.DOSIS, aic.unidad, aic.via, aic.metodo, aic.INICIO, aic.TIEMPO, aic.FIN, aic.ESCALA, aic.MANTIENE, aic.DESCALA, aic.AJUSTE_DOSIS, aic.EMPIRICO
+					 FROM  antibiotico_individual_completo aic ,antibiotico a 
+										WHERE aic.ID_ANTIBIOTICO = a.ID_ANTIBIOTICO AND aic.ID_ANTIBIOTICO_BASADO_EN_ANTIBIOGRAMA_MANUAL = $row[5] AND ESTADO = 1";
 
-
-		$sql_ant = "SELECT * FROM  antibiotico_individual_completo aic ,antibiotico a 
-							WHERE aic.ID_ANTIBIOTICO = a.ID_ANTIBIOTICO AND aic.ID_ANTIBIOTICO_BASADO_EN_ANTIBIOGRAMA_MANUAL = $row[5]";
-
-
-		$resultado_ant = mysqli_query($conexion ,$sql_ant);
-		$ant = array();
-		while($row_ant = mysqli_fetch_array($resultado_ant)){ 
-			$ant[] = array(
-				'a1' => $row_ant[0],
-				'a2' => $row_ant[1],
-				'a3' => $row_ant[2],
-				'dosis' => $row_ant[3],
-				'unidad' => $row_ant[4],
-				'via' => $row_ant[5],
-				'metodo' => $row_ant[6],
-				'inicio' => $row_ant[7],
-				'dias' => $row_ant[8],
-				'fin' => $row_ant[9],
-				'escala' => $row_ant[10],
-				'mantiene' => $row_ant[11],
-				'descala' => $row_ant[12],
-				'ajuste' => $row_ant[13],
-				'id_antibiotico' => $row_ant[14],
-				'antibiotico_nombre' => $row_ant[15]
-			);
-		}
-
-
-		
+					//echo $sql_ant."\n";
+					$resultado_ant = mysqli_query($conexion ,$sql_ant);
+					$ant = array();
+					while($row_ant = mysqli_fetch_array($resultado_ant)){ 
+						$ant[] = array(
+							'id_antibiotico' => $row_ant[0],
+							'antibiotico_nombre' => $row_ant[1],
+							'dosis' => $row_ant[2],
+							'unidad' => $row_ant[3],
+							'via' => $row_ant[4],
+							'metodo' => $row_ant[5],
+							'inicio' => $row_ant[6],
+							'dias' => $row_ant[7],
+							'fin' => $row_ant[8],
+							'escala' => $row_ant[9],
+							'mantiene' => $row_ant[10],
+							'descala' => $row_ant[11],
+							'ajuste' => $row_ant[12],
+							'empirico' => $row_ant[13]
+							
+						);
+					}
+				}
+////////////--------------------------------------------------------------------------		
 		
 
 		$json[] = array(

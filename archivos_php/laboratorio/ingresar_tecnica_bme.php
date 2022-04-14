@@ -61,9 +61,9 @@ if (isset($_POST['id_gram'])) {
 
 
 		$id2 = time()-166237082;
-
-		$sql2="INSERT INTO `tecnicas`(`ID_TECNICAS`, `ID_GRAM`, `ID_EPLEX`) 
-		VALUES ($id2,$id_gram,$id)";
+		$fecha_tec = date("Y-m-d H:i");
+		$sql2="INSERT INTO `tecnicas`(`ID_TECNICAS`, `ID_GRAM`, `ID_EPLEX`,`FECHA_TECNICAS`) 
+		VALUES ($id2,$id_gram,$id,'$fecha_tec')";
 
 		$resultado2 = mysqli_query($conexion, $sql2);
 

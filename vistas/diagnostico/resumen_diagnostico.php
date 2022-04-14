@@ -198,7 +198,8 @@ if (isset($_SESSION['ss_id_paciente'])) {
 							antibioticos+="<strong>Escala: </strong>"+usuario.antibioticos[index].escala+"  ";
 							antibioticos+="<strong>Mantiene: </strong>"+usuario.antibioticos[index].mantiene+"  ";
 							antibioticos+="<strong>Descala: </strong>"+usuario.antibioticos[index].descala+"  ";
-							antibioticos+="<strong>Ajuste: </strong>"+usuario.antibioticos[index].ajuste+"<hr>";
+							antibioticos+="<strong>Ajuste: </strong>"+usuario.antibioticos[index].ajuste+"   ";
+							antibioticos+="<strong>Empírico: </strong>"+usuario.antibioticos[index].empirico+"<hr>";
 
 							antibioticosWhithID[contador] = usuario.antibioticos[index].id_antibiotico;
 							antibioticosWhithID[contador+1] = usuario.antibioticos[index].antibiotico_nombre;
@@ -213,8 +214,9 @@ if (isset($_SESSION['ss_id_paciente'])) {
 							antibioticosWhithID[contador+10] = usuario.antibioticos[index].mantiene;
 							antibioticosWhithID[contador+11] = usuario.antibioticos[index].descala;
 							antibioticosWhithID[contador+12] = usuario.antibioticos[index].ajuste;
+							antibioticosWhithID[contador+13] = usuario.antibioticos[index].empirico;
 
-							contador = contador + 13;
+							contador = contador + 14;
 
 						}
 		
@@ -226,7 +228,7 @@ if (isset($_SESSION['ss_id_paciente'])) {
 						<tr id_lista_usurios="${usuario.id_prescripcion}" >
 
 						<td >
-						${usuario.nombre_paciente}
+						${usuario.nombre_paciente}<br>
 						( ${usuario.historia_clinica} )
 						</td>
 						<td>
@@ -408,7 +410,7 @@ if (isset($_SESSION['ss_id_paciente'])) {
 			</script>
 
 
-<!--######################################################################-->
+
 
 		</body>
 		</html>

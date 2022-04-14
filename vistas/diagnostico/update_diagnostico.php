@@ -66,6 +66,7 @@ if (!isset($usuario)){
 										<input type='text' value='$enf_name' disabled name='enf_name[]' />
 										<input type='hidden' value='$enf_id' disabled name='enf[]'/>
 										<button class='del btn btn-danger' id = '$aux_i' >X</button>
+										
 									  </div>";
 							}
 						?>
@@ -78,7 +79,8 @@ if (!isset($usuario)){
 						<label class="form-label">Comentario</label>
 						<textarea   rows="4" class="form-control " name="diagnostico_descripcion" id="diagnostico_descripcion" ><?php echo $_GET['comentario'];?></textarea>
 					</div>
-					<div class="col text-center">				 
+					<div class="col text-center">
+						<a href="resumen_diagnostico" class="btn btn-secondary">Cancelar</a>			 
 						<button class="btn btn-primary my-3 " id="diagnostico_btn_crear">Actualizar</button>
 					</div>
 				</form>
@@ -276,6 +278,9 @@ if (!isset($usuario)){
 
 			$(document).on('click', '.del', function(e){
             e.preventDefault();
+			if (!confirm("¿Eliminar enfermedad?")) {
+				return;
+			}
             var button_id = $(this).attr("id");
             $('#ef'+button_id+'').remove();
         	});

@@ -11,7 +11,7 @@ if(isset($_POST['id_diagnostico'])){
 	$resultado = mysqli_query($conexion , $sql);
 
 
-    $sql_delete = "DELETE FROM `enf_diag` WHERE `ID_DIAGNOSTICO` = $id_diag";
+    $sql_delete = "UPDATE enf_diag SET ESTADO=0 WHERE  `ID_DIAGNOSTICO` = $id_diag";
     mysqli_query($conexion , $sql_delete);
 
     try {
@@ -22,7 +22,7 @@ if(isset($_POST['id_diagnostico'])){
 			$cod_enf =  $enfermedades_id[$i];
 			$id_enf = time()+$i+1;
 
-			$sql_enf = "INSERT INTO `enf_diag`(`id_enf_diag`, `ID_ENFERMEDAD`, `ID_DIAGNOSTICO`) VALUES ($id_enf,$cod_enf,$id_diag)";
+			$sql_enf = "INSERT INTO `enf_diag`(`id_enf_diag`, `ID_ENFERMEDAD`, `ID_DIAGNOSTICO`,`ESTADO`) VALUES ($id_enf,$cod_enf,$id_diag,1)";
 			
 			$resultado_enf = mysqli_query($conexion , $sql_enf);
 			

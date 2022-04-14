@@ -8,10 +8,11 @@ require '../../conexion_base/conexion_base.php';
 
 if (isset($_POST['id_muestra'])) {
 
-
+	date_default_timezone_set('America/Guayaquil');
+	
 	$id = time()-1636237082;
 	$id_muestra = $_POST['id_muestra'];
-	$fecha = $_POST['g_fecha'];
+	$fecha = date("Y-m-d H:i");
 	$alarma = $_POST['g_alarma'];
 	$resultado = $_POST['g_resultado'];
 	

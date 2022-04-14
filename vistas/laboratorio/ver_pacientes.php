@@ -113,17 +113,12 @@ if (!isset($usuario)){
 							<label class="form-label">Fecha_Recepción</label>
 							<input class="form-control"  type="text" name="m_f_recpcion" id="m_f_recpcion" disabled>
 						</div>
-						<label class="form-label">Fecha Muestra</label>
-						<input class="form-control"  type="date" name="m_fecha" id="m_fecha" value="<?php echo date('Y-m-d');  ?>">
+						<diV class="fecha_ocultar">
+							<label class="form-label">Fecha Muestra</label>
+							<input class="form-control"  type="date" name="m_fecha" id="m_fecha" value="<?php echo date('Y-m-d');  ?>" >
+						</div>
 						<label class="form-label">Numero de frascos</label>
 						<input class="form-control"  type="number" name="m_n_frascos" id="m_n_frascos" value="0">
-						<label class="form-label">Resultado</label>
-						<!--<input class="form-control"  type="text" name="m_resultado" id="m_resultado">-->
-						<select class="form-select" name="m_resultado" id="m_resultado">
-							<option>SI</option>
-							<option>NO</option>
-							
-						</select>
 
 					</form>
 
@@ -132,6 +127,7 @@ if (!isset($usuario)){
 
 					<button type="button" class="btn btn-secondary" data-dismiss="modal" id="btn_cerrar_muestra">Cerrar</button>
 					<button type="button" class="btn btn-primary" data-dismiss="modal" id="btn_ing_muestra">Guardar</button>
+					<button type="button" class="btn btn-primary" data-dismiss="modal" id="crear_actualizar_muestra">Actualizar</button>
 
 				</div>
 			</div>
@@ -149,9 +145,11 @@ if (!isset($usuario)){
 				<div id="body_laboratorio" class="px-3">
 					<form >
 						<input type="hidden" name="m_id_muestra" id="m_id_muestra">
-					 
-						<label class="form-label">Fecha </label>
-						<input class="form-control"  type="date" name="g_fecha" id="g_fecha" value="<?php echo date('Y-m-d');  ?>">
+					 	<div class="fecha_ocultar">
+							<label class="form-label">Fecha </label>
+							<input class="form-control"  type="date" name="g_fecha" id="g_fecha" value="<?php echo date('Y-m-d');  ?>">
+						</div>
+
 						<label class="form-label">Resultado</label>
 						<select class="form-select" id="g_resultado">
 							<option>NO IDENTIFICADO</option>
@@ -175,13 +173,13 @@ if (!isset($usuario)){
 
 					<button type="button" class="btn btn-secondary" data-dismiss="modal" id="btn_cerrar_tincion">Cerrar</button>
 					<button type="button" class="btn btn-primary" data-dismiss="modal" id="btn_ing_tincion">Guardar</button>
+					<button type="button" class="btn btn-primary" data-dismiss="modal" id="btn_actualizar_tincion">Actualizar</button>
 
 				</div>
 			</div>
 		</div>
 	</div>
 
-	 
 
 	
 
@@ -206,6 +204,9 @@ if (!isset($usuario)){
 	</script>
 
 	<script type="text/javascript">
+		var vector_muestra = [];
+		var vector_tincion = [];
+		
 		$(document).ready(function(){
 
 			litar_pacientes();
@@ -222,9 +223,18 @@ if (!isset($usuario)){
 						let lista_usuario = JSON.parse(data);
 						let plantilla = '';
 						lista_usuario.forEach(usuario=>{
+
+							let contador_acciones = 0;
+							vector_muestra.push({"id_muestra":usuario.id_muestra,"fecha_examen":usuario.fecha_examen,"n_frascos":usuario.num_frascos,"resultado_mustra":usuario.resultado});
+
+							
+							if(usuario.id_gram!=null){
+								let alar = (usuario.alarma=="SI")?1:0;
+							vector_tincion.push({"id_tincion":usuario.id_gram,"resultado_gram":usuario.resultado_gram,"alarma":alar});
+							}
+
 							plantilla+=`
 							<tr class=" " id_lista_usurios = "${usuario.id_pedido_examen}|${usuario.fecha_examen}|${usuario.id_muestra}">
-
 							<td >
 							<strong>Código Examen </strong>${usuario.id_pedido_examen}<br>
 							<strong>Paciente </strong>${usuario.paciente}<br>
@@ -234,103 +244,44 @@ if (!isset($usuario)){
 							</td>`;
 
 							//primer caso, completar - - - el if todos esten vacios if(id_muestra ==null and id_tincion==null and id_tecnicas==null)
-							if (usuario.id_muestra == null) {
-								plantilla += `
-								<td></td>
-								<td></td>
-								<td></td>
-								<td><button class='btn btn-primary btn_modal_muestra mt-3'>Muestra </button></td>
-								`;
-							}
-
-
-							if(usuario.resultado=="NO"){
+							if (usuario.id_muestra != null) {
+								contador_acciones++;
 								plantilla += `
 								<td>
 								<strong>Código Muestra: </strong> ${usuario.id_muestra}<br>
 								<strong>Fecha: </strong>${usuario.fecha_muestra}<br>
 								<strong>N° Frascos: </strong>${usuario.num_frascos}<br>
-								<strong>Resultado: </strong>${usuario.resultado}<br>
-								<a class="delete" href="../../archivos_php/laboratorio/eliminar.php?id=${usuario.id_muestra}&proceso=1" class=" "><img src="../../imagenes/delete1.png"/></a>
-								</td>
-									<td></td>
-									<td></td>
-									<td>
-										Terminado
-									</td>
-									
-								`;
 								
+								<a  href="#" class="update_muestra" id_mu="${usuario.id_muestra}" ><img src="../../imagenes/update.png"/></a>
+								</td>
+								`;
 							}else{
-
-							//segundo caso  * - - , solo esta llena la primera caja
-							if(usuario.id_muestra != null && usuario.id_gram == null){
-								plantilla += `
-								<td>
-								<strong>Código Muestra: </strong> ${usuario.id_muestra}<br>
-								<strong>Fecha: </strong>${usuario.fecha_muestra}<br>
-								<strong>N° Frascos: </strong>${usuario.num_frascos}<br>
-								<strong>Resultado: </strong>${usuario.resultado}<br>
-								<a class="delete" href="../../archivos_php/laboratorio/eliminar.php?id=${usuario.id_muestra}&proceso=1" class=" "><img src="../../imagenes/delete1.png"/></a>
-								</td>
-								<td></td>
-								<td></td>
-								<td><button class='btn btn-primary btn_modal_tincion mt-3'>Tinción</button></td>
-								`;
+								plantilla += "<td></td>";
 							}
 
-							
-							//tercer caso  * * - , 
-							if(usuario.id_gram != null && usuario.id_tecnicas == null ){
+
+							if(usuario.id_gram != null ){
+								contador_acciones++;
 								plantilla += `
-								<td>
-								<strong>Código Muestra: </strong> ${usuario.id_muestra}<br>
-								<strong>Fecha: </strong>${usuario.fecha_muestra}<br>
-								<strong>N° Frascos: </strong>${usuario.num_frascos}<br>
-								<strong>Resultado: </strong>${usuario.resultado}<br>
-								<a class="delete" href="../../archivos_php/laboratorio/eliminar.php?id=${usuario.id_muestra}&proceso=1" class=" "><img src="../../imagenes/delete1.png"/></a>
-								</td>
 								<td>
 								<strong>Código Gram: </strong> ${usuario.id_gram}<br>
 								<strong>Fecha: </strong>${usuario.fecha_gram}<br>
 								<strong>Resultado: </strong>${usuario.resultado_gram}<br>
 								<strong>Alarma: </strong>${usuario.alarma}<br>
-								<a class="delete" href="../../archivos_php/laboratorio/eliminar.php?id=${usuario.id_gram}&proceso=2" class=" "><img src="../../imagenes/delete1.png"/></a>
-
-								</td>
-								<td></td>
-								<td>
-								<form method="post" action="/iess/vistas/laboratorio/tecnicas">
-									<input type="hidden" name="id_tincion" value="${usuario.id_gram}">
-									<input type="hidden" name="paciente" value="${usuario.paciente}">
-									<button class='btn btn-primary  mt-3'>Técnicas</button>
-								</form>
-								
-
+								<a class="update_tincion" id_tin="${usuario.id_gram}" href="#" class=" "><img src="../../imagenes/update.png"/></a>
 								</td>
 								`;
+							}else{
+								plantilla += "<td></td>";
 							}
 
-							//cuarto caso * * *
 							if(usuario.id_tecnicas != null ){
+								contador_acciones++;
 								plantilla += `
-								<td>
-								<strong>Código Muestra: </strong> ${usuario.id_muestra}<br>
-								<strong>Fecha: </strong>${usuario.fecha_muestra}<br>
-								<strong>N° Frascos: </strong>${usuario.num_frascos}<br>
-								<strong>Resultado: </strong>${usuario.resultado}<br>
-								<a class="delete" href="../../archivos_php/laboratorio/eliminar.php?id=${usuario.id_muestra}&proceso=1" class=" "><img src="../../imagenes/delete1.png"/></a>
-								</td>
-								<td>
-								<strong>Código Gram: </strong> ${usuario.id_gram}<br>
-								<strong>Fecha: </strong>${usuario.fecha_gram}<br>
-								<strong>Resultado: </strong>${usuario.resultado_gram}<br>
-								<strong>Alarma: </strong>${usuario.alarma}<br>
-								<a class="delete" href="../../archivos_php/laboratorio/eliminar.php?id=${usuario.id_gram}&proceso=2" class=" "><img src="../../imagenes/delete1.png"/></a>
 
-								</td>
 								<td>
-								<strong>Código tecnicas: </strong> ${usuario.id_tecnicas}<br> <br>
+								<strong>Código tecnicas: </strong> ${usuario.id_tecnicas}<br> 
+								<strong>Fecha: </strong> ${usuario.f_tecnicas}<br> <br>
 
 								<label style="cursor:pointer; cursor: hand;" onClick="desplegar('${usuario.id_tecnicas}','estadoT')" ><strong><u>Ver más..[+] </u></strong></label> <br>
 								
@@ -366,20 +317,44 @@ if (!isset($usuario)){
 				
 									}
 
-									plantilla += "</div>";
-
-
-
-								plantilla += `
-								<a class="delete" href="../../archivos_php/laboratorio/eliminar.php?id=${usuario.id_tecnicas}&proceso=3" class=" "><img src="../../imagenes/delete1.png"/></a>
-										</td>
-												<td>
-												<label>Terminado</label>
+									plantilla += `
+												</div>
+												<a class="update_tecnicas"  href="update_tecnicas?id_tecnicas=${usuario.id_tecnicas}" class=" "><img src="../../imagenes/update.png"/></a>
 												</td>`;
+							}else{
+								plantilla += "<td></td>";
 							}
 
+							//////////////////asignar botones
+							
 
-						}
+							if(contador_acciones==0){
+								plantilla += `<td>
+												<button class='btn btn-primary btn_modal_muestra mt-3'>Muestra </button>
+											  </td>`;
+							}else if(contador_acciones==1){
+								plantilla += `<td>
+												<button class='btn btn-primary btn_modal_tincion mt-3'>Tinción</button> 
+												
+											  </td>`;
+							}
+							else if(contador_acciones==2 && usuario.alarma=="NO"){
+								plantilla += `<td>Terminado</td>`;
+							}else if(contador_acciones==2 && usuario.alarma=="SI"){
+								plantilla += `<td>
+												<form method="post" action="/iess/vistas/laboratorio/tecnicas">
+													<input type="hidden" name="id_tincion" value="${usuario.id_gram}">
+													<input type="hidden" name="paciente" value="${usuario.paciente}">
+													<button class='btn btn-primary  mt-3'>Técnicas</button>
+												</form>
+											</td>`;
+							}else if(contador_acciones==3){
+								plantilla += `<td>Terminado</td>`;
+							}
+							console.log(contador_acciones)
+							
+
+						
 							
 
 							plantilla += `</tr>`;
@@ -419,9 +394,17 @@ if (!isset($usuario)){
 
 			$('#m_id_examen').val(my_id[0]);
 			$('#m_f_recpcion').val(my_id[1]);
+			//auto completar
+			
+			$('#m_n_frascos').val(0);
+			
+			$("#crear_actualizar_muestra").css("display", "none");
+			$("#btn_ing_muestra").css("display", "block");
+			$(".fecha_ocultar").css("display", "block");
 			
 
 			$('#modal_muestra').modal("show");
+
 
 		}); 
 
@@ -436,15 +419,16 @@ if (!isset($usuario)){
 	<script type="text/javascript">
 		//ingresar muestra
 
+
 		$(document).on('click','#btn_ing_muestra',function(e){
 			e.preventDefault();
 
+			
 			var data_form={
 					id_examen:$('#m_id_examen').val(),
 					f_recepcion:$('#m_f_recpcion').val(),
 					fecha:$('#m_fecha').val(),
-					n_frascos:$('#m_n_frascos').val(),
-					resultado:$('#m_resultado').val()
+					n_frascos:$('#m_n_frascos').val()
 				}
 				$.post('../../archivos_php/laboratorio/ingresar_muestra.php', data_form, function(data) {
 					console.log(data)
@@ -474,7 +458,9 @@ if (!isset($usuario)){
 
 			$('#m_id_muestra').val(my_id[2]);
 			
-
+			$(".fecha_ocultar").css("display", "block");
+			
+			$("#btn_actualizar_tincion").css("display", "none");
 			$('#modal_tincion').modal("show");
 
 		}); 
@@ -545,6 +531,104 @@ if (!isset($usuario)){
 	})
 	</script>
 
+	<!--#########################Actualizar#############################################-->
 
+<script type="teXt/javascript">
+		$(document).on('click','.update_muestra',function(){
+
+			//auto completar
+			//vector_muestra.push({"id_muestra":usuario.id_muestra,"fecha_examen":usuario.fecha_examen,"n_frascos":usuario.n_frascos,"resultado_mustra":usuario.resultado_mustra});
+			let button_id = $(this).attr("id_mu");
+			//console.log(vector_muestra)
+			vector_muestra.forEach(usuario=>{
+				if(button_id == usuario.id_muestra){
+					$('#m_id_examen').val(usuario.id_muestra);
+					$('#m_f_recpcion').val(usuario.fecha_examen);
+					$('#m_fecha').val();
+					$('#m_n_frascos').val(usuario.n_frascos);
+
+				}
+
+			});
+			$("#crear_actualizar_muestra").css("display", "block");
+			$("#btn_ing_muestra").css("display", "none");
+			$(".fecha_ocultar").css("display", "none");
+			
+			$('#modal_muestra').modal('show');
+			
+
+		});
+
+		$(document).on('click','#crear_actualizar_muestra',function(e){
+			
+			e.preventDefault();
+
+			
+			var data_form={
+					id_examen:$('#m_id_examen').val(),
+					fecha:$('#m_fecha').val(),
+					n_frascos:$('#m_n_frascos').val()
+				}
+				$.post('../../archivos_php/laboratorio/update_muestra.php', data_form, function(data) {
+					console.log(data)
+					if (data=="ok") {
+						succes_refresh("Datos Guardados",'ver_pacientes');
+					}else {
+						erro_message("Error no se guardó");
+					}
+				});
+		});
+
+</script>
+
+<script type="teXt/javascript">
+
+
+$(document).on('click','.update_tincion',function(){
+
+//auto completar
+//vector_tincion.push({"id_tincion":usuario.id_gram,"resultado_gram":usuario.resultado_gram,"alarma":usuario.alarma});
+let button_id = $(this).attr("id_tin");
+console.log(vector_tincion)
+vector_tincion.forEach(usuario=>{
+	if(button_id == usuario.id_tincion){
+		$('#m_id_muestra').val(usuario.id_tincion);
+		$('#g_resultado').val(usuario.resultado_gram);
+		$('#g_alarma').val(usuario.alarma);
+	}
+
+});
+$(".fecha_ocultar").css("display", "none");
+$("#btn_ing_tincion").css("display", "none");
+$("#btn_actualizar_tincion").css("display", "block");
+$('#modal_tincion').modal("show");
+
+
+});
+
+$(document).on('click','#btn_actualizar_tincion',function(e){
+			e.preventDefault();
+			console.log("Actualizar tincion");
+			var data_form={
+					id_tincion:$('#m_id_muestra').val(),
+					g_resultado:$('#g_resultado').val(),
+					g_alarma:$('#g_alarma').val(),
+					
+				};
+			console.log(data_form)
+				$.post('../../archivos_php/laboratorio/update_gram.php', data_form, function(data) {
+					console.log(data)
+					if (data=="ok") {
+						succes_refresh("Datos Guardados",'ver_pacientes');
+					}else {
+						erro_message("Error no se guardó");
+					}
+				});
+			
+
+});
+
+
+</script>
 </body>
 </html> 

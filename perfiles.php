@@ -53,7 +53,7 @@ $rol = $_SESSION['categoria'];
 
 
 						echo "
-				<a href='vistas/diagnostico/mis_alertas'><button class='btn btn-lg btn-primary op'><h2>Alertas <label id='perfil_notificacion'> [0]</label></h2></button></a>
+				<a href='vistas/diagnostico/mis_alertas'><button class='btn btn-lg btn-primary op'><h2>Alertas <label id='perfil_notificacion'> (0)</label></h2></button></a>
 				<a  href='vistas/usuarios/administrador'><button class='btn btn-lg btn-primary op'><h2>Gestión de Usuario</h2></button></a>
 				<a href='vistas/diagnostico/diagnostico'><button class='btn btn-lg btn-primary op'><h2>Registro de Diagnóstico</h2></button></a>
 				<a href='vistas/laboratorio/ver_pacientes'><button class='btn btn-lg btn-primary op'><h2>Laboratorio</h2></button></a>

@@ -36,7 +36,7 @@ if (isset($_POST['diagnostico_id_medico'])) {
 			$cod_enf =  $enfermedades_id[$i];
 			$id_enf = time()+$i+1;
 
-			$sql_enf = "INSERT INTO `enf_diag`(`id_enf_diag`, `ID_ENFERMEDAD`, `ID_DIAGNOSTICO`) VALUES ($id_enf,$cod_enf,$clave_temp)\n";
+			$sql_enf = "INSERT INTO `enf_diag`(`id_enf_diag`, `ID_ENFERMEDAD`, `ID_DIAGNOSTICO`,`ESTADO`) VALUES ($id_enf,$cod_enf,$clave_temp,1);";
 			
 			$resultado_enf = mysqli_query($conexion , $sql_enf);
 			

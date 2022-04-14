@@ -19,6 +19,11 @@ if (!isset($usuario)){
 	<link rel="stylesheet" type="text/css" href="../../css/b_css/bootstrap.min.css">
 	<link rel="stylesheet" type="text/css" href="../../css/menu.css">
 	<link rel="stylesheet" type="text/css" href="../../css/mensaje_error.css">
+	<style type="text/css" media="screen">
+
+	.modal-lg { max-width: 85% !important; }
+
+	</style>
 </head>
 <body>
 	
@@ -91,7 +96,7 @@ if (!isset($usuario)){
 
 				</div>
 				<hr>
-				<h6>Nuva Prescripción</h6>
+				<h6>Nueva Prescripción</h6>
 
 
 				<div>
@@ -138,7 +143,7 @@ if (!isset($usuario)){
 
 			<!--modal++++++++++++++-->
 <div class="modal" tabindex="-1" role="dialog" id="modal_ant"> 
-  <div class="modal-dialog" role="document">
+  <div class="modal-dialog modal-lg bg-danger"  role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Antibioticos</h5>
@@ -209,7 +214,7 @@ if (!isset($usuario)){
 
 					<hr>
 
-					<div class="col-3">
+					<div class="col-2">
 						<label class="form-label">Escala</label>
 						<select class="form-select" id="escala" name="escala">
 							<option>NO</option>
@@ -217,7 +222,7 @@ if (!isset($usuario)){
 
 						</select>
 					</div>
-					<div class="col-3">
+					<div class="col-2">
 						<label class="form-label">Mantien</label>
 						<select class="form-select" id="mantiene" name="mantiene">
 							<option>NO</option>
@@ -225,16 +230,23 @@ if (!isset($usuario)){
 
 						</select>
 					</div>
-					<div class="col-3">
+					<div class="col-2">
 						<label class="form-label">Descala</label>
 						<select class="form-select" id="descala" name="descala">
 							<option>NO</option>
 							<option>SI</option>
 						</select>
 					</div>
-					<div class="col-3">
+					<div class="col-2">
 						<label class="form-label">Ajuste dosis</label>
 						<select class="form-select" id="ajuste" name="ajuste">
+							<option>NO</option>
+							<option>SI</option>
+						</select>
+					</div>	
+					<div class="col-2">
+						<label class="form-label">Empírico</label>
+						<select class="form-select" id="empirico" name="empirico">
 							<option>NO</option>
 							<option>SI</option>
 						</select>
@@ -376,6 +388,7 @@ if (!isset($usuario)){
 		var mantiene = $("#mantiene").val();
 		var descala = $("#descala").val();
 		var ajuste = $("#ajuste").val();
+		var empirico = $("#empirico").val();
 
 
 		data_form_global.push({
@@ -391,7 +404,8 @@ if (!isset($usuario)){
 								"escala":escala,
 								"mantiene":mantiene,
 								"descala":descala,
-								"ajuste":ajuste
+								"ajuste":ajuste,
+								"empirico":empirico
 							
 							});
 		
@@ -404,7 +418,7 @@ if (!isset($usuario)){
 									<strong>Antibiótico:</strong> ${ant}<br>
 									<strong>Dosis:</strong> ${dosis},	<strong>Unidad:</strong> ${unidad},	<strong>Vía:</strong> ${via},	<strong>Método:</strong> ${metodo}<br>
 									<strong>Fecha:</strong> ${inicio},    ${tiempo} <strong>días</strong>,   ${fin}<br>
-									<strong>Escala:</strong> ${escala}, <strong>Mantien:</strong> ${mantiene},	<strong>Descala:</strong> ${descala},	<strong>Ajuste:</strong> ${ajuste}	
+									<strong>Escala:</strong> ${escala}, <strong>Mantien:</strong> ${mantiene},	<strong>Descala:</strong> ${descala},	<strong>Ajuste:</strong> ${ajuste}, <strong>Empírico:</strong> ${empirico}	
 								</label>
 								<button class="del btn btn-danger " id = ${i}>X</button>
 						  </div>`;

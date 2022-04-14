@@ -3,7 +3,8 @@
 
 require '../../conexion_base/conexion_base.php';
 
-
+date_default_timezone_set('America/Guayaquil');
+	
  
  
 if (isset($_POST['id_examen'])) {
@@ -17,15 +18,14 @@ if (isset($_POST['id_examen'])) {
 	
 
 	$f_recepcion=$_POST['f_recepcion'];
-	$f_muestra=$_POST['fecha'];
+	$f_muestra=date("Y-m-d H:i");
 
 	$n_frascos=$_POST['n_frascos'];
-	$resultado=$_POST['resultado']; 
 
 	
 
-	$sql = "INSERT INTO `recepcion_muestra_emocultivo`(`ID_RECEPCION_MUESTRA_EMOCULTIVO`, `ID_PEDIDO_EXAMEN`, `NOMBRE_RESPONSABLE`, `FECHA_RECEPCION`, `FECH_MUESTRA`, `NUME_FRASCOS`, `RESULTADO`) 
-	VALUES ($id,$id_examen,'$medico','$f_recepcion','$f_muestra','$n_frascos','$resultado')";
+	$sql = "INSERT INTO `recepcion_muestra_emocultivo`(`ID_RECEPCION_MUESTRA_EMOCULTIVO`, `ID_PEDIDO_EXAMEN`, `NOMBRE_RESPONSABLE`, `FECHA_RECEPCION`, `FECH_MUESTRA`, `NUME_FRASCOS`) 
+	VALUES ($id,$id_examen,'$medico','$f_recepcion','$f_muestra','$n_frascos')";
 
 
  	

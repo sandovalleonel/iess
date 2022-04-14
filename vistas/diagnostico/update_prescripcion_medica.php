@@ -19,6 +19,11 @@ if (!isset($usuario)){
 	<link rel="stylesheet" type="text/css" href="../../css/b_css/bootstrap.min.css">
 	<link rel="stylesheet" type="text/css" href="../../css/menu.css">
 	<link rel="stylesheet" type="text/css" href="../../css/mensaje_error.css">
+	<style type="text/css" media="screen">
+
+	.modal-lg { max-width: 85% !important; }
+
+	</style>
 </head>
 <body>
 	
@@ -64,7 +69,7 @@ if (!isset($usuario)){
 
 				</div>
 				<hr>
-				<h6>Nuva Prescripción</h6>
+				<h6>Nueva Prescripción</h6>
 
 
 				<div>
@@ -78,50 +83,11 @@ if (!isset($usuario)){
 					$antibioticos = explode(",",$aux);
 					
 					$cont = 50;
-					for ($i=0; $i < count($antibioticos) ; $i=$i+13) { 
-						$id_ant = $antibioticos[$i];
-						$ant_nombre = $antibioticos[($i+1)];
-						$dosis = $antibioticos[($i+2)];
-						$unidad = $antibioticos[($i+3)];
-						$via = $antibioticos[($i+4)];
-						$metodo = $antibioticos[($i+5)];
-						$inicio = $antibioticos[($i+6)];
-						$dias = $antibioticos[($i+7)];
-						$fin = $antibioticos[($i+8)];
-						$escala = $antibioticos[($i+9)];
-						$mantiene = $antibioticos[($i+10)];
-						$descala = $antibioticos[($i+11)];
-						$ajuste = $antibioticos[($i+12)];
-						echo "
-								<div id='ant$cont' class='pb-2'>
-								<label class='bg-warning d-block'>
-									<strong>Antibiótico:</strong> $ant_nombre<br>
-									<strong>Dosis:</strong> $dosis,	<strong>Unidad:</strong> $unidad,	<strong>Vía:</strong> $via,	<strong>Método:</strong> $metodo<br>
-									<strong>Fecha:</strong> $inicio,    $dias <strong>días</strong>,   $fin<br>
-									<strong>Escala:</strong> $escala, <strong>Mantien:</strong> $mantiene,	<strong>Descala:</strong> $descala,	<strong>Ajuste:</strong> $ajuste	
-								</label>
-								<button class='del btn btn-danger' id =$cont>X</button>
-							  </div>
-						";
-
-						echo "
-								<div>
-									<input type='hidden' name=dat[] value='$cont'/>
-									<input type='hidden' name=dat[] value='$id_ant'/>
-									<input type='hidden' name=dat[] value='$dosis'/>
-									<input type='hidden' name=dat[] value='$unidad'/>
-									<input type='hidden' name=dat[] value='$via'/>
-									<input type='hidden' name=dat[] value='$metodo'/>
-									<input type='hidden' name=dat[] value='$inicio'/>
-									<input type='hidden' name=dat[] value='$dias'/>
-									<input type='hidden' name=dat[] value='$fin'/>
-									<input type='hidden' name=dat[] value='$escala'/>
-									<input type='hidden' name=dat[] value='$mantiene'/>
-									<input type='hidden' name=dat[] value='$descala'/>
-									<input type='hidden' name=dat[] value='$ajuste'/>
-								</div>
-							";
-						$cont++;
+					for ($i=0; $i < count($antibioticos) ; $i=$i+14) { 
+						for($j = 0; $j < 14; $j++){
+							$pos = $i +$j ;
+							echo "<input type='hidden' name=dat[] value='$antibioticos[$pos]'/>";
+						}
 					}
 					?>
 					</div>
@@ -136,6 +102,7 @@ if (!isset($usuario)){
 				</div>
 
 				<div class="col text-center">
+					<a href="resumen_diagnostico" class="btn btn-secondary">Cancelar</a>
 					<button class="btn btn-primary my-3" id="btn_guardar">Actualizar</button>
 
 				</div>
@@ -158,7 +125,7 @@ if (!isset($usuario)){
 
 			<!--modal++++++++++++++-->
 <div class="modal" tabindex="-1" role="dialog" id="modal_ant"> 
-  <div class="modal-dialog" role="document">
+  <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Antibioticos</h5>
@@ -259,10 +226,17 @@ if (!isset($usuario)){
 							<option>SI</option>
 						</select>
 					</div>	
+					<div class="col-3">
+						<label class="form-label">Empírico</label>
+						<select class="form-select" id="empirico" name="empirico">
+							<option>NO</option>
+							<option>SI</option>
+						</select>
+					</div>	
       </div>
       <div class="modal-footer">
 	  <button type="button" class="btn btn-primary" data-dismiss="modal" id="carga_ant">Seleccionar</button>
-        <button type="button" class="btn btn-secondary" data-dismiss="modal" id="cerrar_ant">Cerrar</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" id="cerrar_ant" onclick="$('#modal_ant').modal('hide')">Cerrar</button>
       </div>
     </div>
   </div>
@@ -330,17 +304,14 @@ if (!isset($usuario)){
 	//visualizar fechas
 
 		$(document).ready(function() {
-
 			$('#tiempo').on("input", function() {
 				let dias = this.value;
 				dias = parseInt(dias);
 				let f = new Date();
 				let fecha_actual = obtener_fecha_final(f);
-
-
 				let fecha_sumada = obtener_fecha_final( sumar_fechas(dias) );
 			//console.log(sumar_fechas(dias));
-			$('#fin').val(fecha_sumada);
+				$('#fin').val(fecha_sumada);
 
 		});
 
@@ -370,18 +341,37 @@ if (!isset($usuario)){
 
 
 <script type="text/javascript">
-	var i = 1;
+	var estado = false;
+	var aux_indice = 0;
+	//mostrar modal 
+	var i = 100;
 	$("#add" ).click(function(e) {
             e.preventDefault();
+			$("#antibiotico").val();	
+				$("#dosis").val(0);
+				$("#unidad").val();
+				$("#via").val();
+				$("#metodo").val();
+				$("#inicio").val();
+				$("#tiempo").val(0);
+				$("#fin").val();
+				$("#escala").val();
+				$("#mantiene").val();
+				$("#descala").val();
+				$("#ajuste").val();
+				$("#empirico").val();
 			$('#modal_ant').modal('show');
     });
 
-	function isNormalInteger(str) { var n = ~~Number(str); return String(n) === str && n >= 0; }
+
+	///cargar antibiotico en el json
 
 	$(document).on('click', '#carga_ant', function(e){
+		function isNormalInteger(str) { var n = ~~Number(str); return String(n) === str && n >= 0; }
+		
 		var n = $("#tiempo").val();
 		if(!isNormalInteger(n)){
-			alert("El campo de días solo acepta números enteros positivos.");
+			//alert("El campo de días solo acepta números enteros positivos.");
 			return;
 		}
 
@@ -398,11 +388,34 @@ if (!isset($usuario)){
 		var mantiene = $("#mantiene").val();
 		var descala = $("#descala").val();
 		var ajuste = $("#ajuste").val();
+		var empirico = $("#empirico").val();
+
+		if(estado == true){
+			//alert("tenemos que actualizar con el id: "+aux_indice);
+			///eliminar obj
+			const removeById = (arr, id) => {
+				const requiredIndex = arr.findIndex(el => {
+					return el.id == String(id);
+				});
+				if(requiredIndex == -1){
+					return false;
+				};
+				return !!arr.splice(requiredIndex, 1);
+			};
+			removeById(data_form_global,aux_indice)
+			///eliminar obj
+			estado = false;
+			aux_indice = 0;
+
+
+
+		}
 
 
 		data_form_global.push({
 								"id":i,
 								"id_ant":id_ant,
+								"ant":ant,
 								"dosis":dosis,
 								"unidad":unidad,
 								"via":via,
@@ -413,42 +426,30 @@ if (!isset($usuario)){
 								"escala":escala,
 								"mantiene":mantiene,
 								"descala":descala,
-								"ajuste":ajuste
+								"ajuste":ajuste,
+								"empirico":empirico
 							
 							});
 		
-		
-		//console.log(data_form_global);
-		
-
-		let antibiotico= `<div id="ant${i}" class="pb-2 ">
-								<label class="bg-warning d-block">
-									<strong>Antibiótico:</strong> ${ant}<br>
-									<strong>Dosis:</strong> ${dosis},	<strong>Unidad:</strong> ${unidad},	<strong>Vía:</strong> ${via},	<strong>Método:</strong> ${metodo}<br>
-									<strong>Fecha:</strong> ${inicio},    ${tiempo} <strong>días</strong>,   ${fin}<br>
-									<strong>Escala:</strong> ${escala}, <strong>Mantien:</strong> ${mantiene},	<strong>Descala:</strong> ${descala},	<strong>Ajuste:</strong> ${ajuste}	
-								</label>
-								<button class="del btn btn-danger " id = ${i}>X</button>
-						  </div>`;
-		$("#canvas_ant").append(antibiotico);
 		i++;
+		//console.log(data_form_global);
+		mostrarantibioticos()
+
 		$('#modal_ant').modal('hide');
 	});
 
 
-
+//eliminar objetos
 	$(document).on('click', '.del', function(e){
             e.preventDefault();
-
-			
-
-
+			if (!confirm("¿Eliminar antibiótico?")) {
+				return;
+			}
             var button_id = $(this).attr("id");
-            $('#ant'+button_id+'').remove();
-
+           
+			///eliminar obj
 			const removeById = (arr, id) => {
 				const requiredIndex = arr.findIndex(el => {
-					
 					return el.id == String(id);
 				});
 				if(requiredIndex == -1){
@@ -457,27 +458,30 @@ if (!isset($usuario)){
 				return !!arr.splice(requiredIndex, 1);
 			};
 			removeById(data_form_global,button_id)
-			//console.log(data_form_global);
+			///eliminar obj
+			mostrarantibioticos();
+			
 			
     });
+	function objt_a_eliminar(){
+		
+	}
 
-	$(document).on('click', '#cerrar_ant', function(e){
-            e.preventDefault();
-			$('#modal_ant').modal('hide');
-    });
+
 </script>
 
 
 <script type="text/javascript">
 cargar_prescripcion_old();
+mostrarantibioticos();
 function cargar_prescripcion_old(){
 
 			let data = $.map($('input[type=hidden][name="dat[]"]'), function(el) { return el.value; });
-
-			for (let index = 0; index < data.length; index= index+13) {
+			for (let index = 0; index < data.length; index= index+14) {
 				data_form_global.push({
-								"id":data[index],
-								"id_ant":data[index+1],
+								"id":index,
+								"id_ant":data[index],
+								"ant":data[index+1],
 								"dosis":data[index+2],
 								"unidad":data[index+3],
 								"via":data[index+4],
@@ -488,15 +492,66 @@ function cargar_prescripcion_old(){
 								"escala":data[index+9],
 								"mantiene":data[index+10],
 								"descala":data[index+11],
-								"ajuste":data[index+12]
-							
+								"ajuste":data[index+12],
+								"empirico":data[index+13]
 							});
-
 			}
-			
-
 	}
 
+function mostrarantibioticos(){
+	let  antibiotico="";
+
+	data_form_global.forEach(element => {
+		antibiotico += `<div id="ant${element.id}" class="pb-2 ">
+								<label class="bg-warning d-block">
+									<strong>Antibiótico:</strong> ${element.ant}<br>
+									<strong>Dosis:</strong> ${element.dosis},	<strong>Unidad:</strong> ${element.unidad},	<strong>Vía:</strong> ${element.via},	<strong>Método:</strong> ${element.metodo}<br>
+									<strong>Fecha:</strong> ${element.inicio},    ${element.tiempo} <strong>días</strong>,   ${element.fin}<br>
+									<strong>Escala:</strong> ${element.escala}, <strong>Mantien:</strong> ${element.mantiene},	<strong>Descala:</strong> ${element.descala},	<strong>Ajuste:</strong> ${element.ajuste}, <strong>Empírico:</strong> ${element.empirico}	
+								</label>
+								<button class="del btn btn-danger " id = "${element.id}">X</button>
+								<a class="update" id_update ="${element.id}" href="#"><img src="../../imagenes/update.png"/></a>
+						  </div>`;
+						 
+	});
+		$("#canvas_ant").empty();
+		$("#canvas_ant").append(antibiotico);
+}
+
+
+$(document).on('click', '.update', function(e){
+				e.preventDefault();
+				var button_id = $(this).attr("id_update");
+				estado = true;
+				aux_indice = button_id;
+				
+				
+				console.log(data_form_global)
+				data_form_global.forEach(element => {
+					if(element.id == button_id){
+						console.log(element)
+						$("#antibiotico").val(element.id_ant);	
+						$("#dosis").val(element.dosis);
+						$("#unidad").val(element.unidad);
+						$("#via").val(element.via);
+						$("#metodo").val(element.metodo);
+						$("#inicio").val(element.inicio);
+						$("#tiempo").val(element.tiempo);
+						$("#fin").val(element.fin);
+						$("#escala").val(element.escala);
+						$("#mantiene").val(element.mantiene);
+						$("#descala").val(element.descala);
+						$("#ajuste").val(element.ajuste);
+						$("#empirico").val(element.empirico);
+					}
+				});
+				
+				
+				$('#modal_ant').modal('show');
+})
 </script>
+
+
+
 </body>
 </html>

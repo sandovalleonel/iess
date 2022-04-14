@@ -45,11 +45,12 @@ if ($jsonString[$tam_json-1]['id_diag']!=null) {
 					$mantiene = $jsonString[$i]['mantiene'];
 					$descala = $jsonString[$i]['descala'];
 					$ajuste = $jsonString[$i]['ajuste'];
+					$empirico = $jsonString[$i]['empirico'];
 
 					$sql_ant = "INSERT INTO 
 					`antibiotico_individual_completo`(`id_antibiotico_individual`, `ID_ANTIBIOTICO_BASADO_EN_ANTIBIOGRAMA_MANUAL`,`ID_ANTIBIOTICO`, 
-					`DOSIS`, `unidad`, `via`, `metodo`, `INICIO`, `TIEMPO`, `FIN`, `ESCALA`, `MANTIENE`, `DESCALA`, `AJUSTE_DOSIS`) 
-					VALUES ($id2,$id,$id_ant_name,'$dosis','$unidad','$via','$metodo','$inicio',$tiempo,'$fin','$escala','$mantiene','$descala','$ajuste')"; 
+					`DOSIS`, `unidad`, `via`, `metodo`, `INICIO`, `TIEMPO`, `FIN`, `ESCALA`, `MANTIENE`, `DESCALA`, `AJUSTE_DOSIS`,`EMPIRICO`,`ESTADO`) 
+					VALUES ($id2,$id,$id_ant_name,'$dosis','$unidad','$via','$metodo','$inicio',$tiempo,'$fin','$escala','$mantiene','$descala','$ajuste','$empirico',1)"; 
 					//echo $sql_ant;
 					
 					$resultado_ant = mysqli_query($conexion , $sql_ant);

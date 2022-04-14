@@ -13,7 +13,7 @@ require '../../conexion_base/conexion_base.php';
         (SELECT b.NOM_BACTERIA from bacteria b WHERE b.ID_BACTERIA = ta.ID_BACTERIA),
         ta.ID_ANTIBIOGRAMA,ta.FENOTIPO,ta.FECHA_ANTIBIOGRAMA,ta.REPORTE_ACRODE_A_GUIA,ta.OBSERVACION_ANTIBIOGRAMA,
         (SELECT b.NOM_BACTERIA from bacteria b WHERE b.ID_BACTERIA = te.ID_BACTERIA),
-        te.ID_EPLEX,te.MEC_RESISTENCIA,te.FECHA_EPLEX,te.OBSERVACION_EPLEX
+        te.ID_EPLEX,te.MEC_RESISTENCIA,te.FECHA_EPLEX,te.OBSERVACION_EPLEX,t.FECHA_TECNICAS
              
 
 FROM v_diagnostico vd
@@ -84,7 +84,10 @@ while($row = mysqli_fetch_array($resultado)){
 		'id_eplex'=>$row[27],
 		'mec_resistencia'=>$row[28],
 		'fecha_explex'=>$row[29],
-		'observacion_eplex'=>$row[30]
+		'observacion_eplex'=>$row[30],
+
+		'f_tecnicas'=>$row[31]
+
 
 
 

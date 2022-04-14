@@ -7,7 +7,7 @@ if (isset($_POST['id_gram'])) {
 
 	 
 date_default_timezone_set('America/Guayaquil');
-	
+ 	
 	 $id = time()-1636237082;
 	 $id_gram=$_POST['id_gram'];
 	 $id_bacteria=$_POST['id_bacteria'];
@@ -57,8 +57,9 @@ date_default_timezone_set('America/Guayaquil');
 
 
 	$id2 = time()-1636237082;
-	$sql2="INSERT INTO `tecnicas`(`ID_TECNICAS`, `ID_GRAM`, `ID_ANTIBIOGRAMA`) 
-	VALUES ($id2,$id_gram,$id)";
+	$fecha_tec = date("Y-m-d H:i");
+	$sql2="INSERT INTO `tecnicas`(`ID_TECNICAS`, `ID_GRAM`, `ID_ANTIBIOGRAMA`,`FECHA_TECNICAS`) 
+	VALUES ($id2,$id_gram,$id,'$fecha_tec')";
 	
 	$resultado2 = mysqli_query($conexion, $sql2);
 
