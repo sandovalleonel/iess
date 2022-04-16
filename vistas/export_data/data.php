@@ -22,6 +22,15 @@ if (!isset($usuario)){
 
 	<link rel="stylesheet" type="text/css" href="../../css/b_css/bootstrap.min.css">
 	<link rel="stylesheet" type="text/css" href="../../css/menu.css">
+	<style type="text/css">
+
+.contenedor{
+
+	display: block;
+	width: max-content;
+}
+
+	</style>
 
 </head>
 <body class="bg-light">
@@ -51,18 +60,14 @@ if (!isset($usuario)){
 					<thead>
 						<tr>
 							<?php 
-							$cabecera = array( "Paciente","Médico_Diagnóstico","Id_diagnostico","Enfermedad1",
-					"Enfermedad2","Comentario_diagnóstico","Fecha_diagnóstico",
-					"id_prescipción","antibiótico1","dosis1","antibiótico2(opcional)",
-					"dosis2(opcional)","antibiótico3(opcional)","dosis3(opcional)",
-					"fecha_inicio","tiempo(dias)","fecha_fin","escala","mantiene","descala",
-					"ajuste_dosis","id_examen","tipo_examen","fecha_examen","id_muestra",
-					"Médico_laboratorio","fecha","numero_frascos","Resultado","id_tinción","fecha_tinción",
-					"Resultado_tinción","alarma","id_técnicas","bacteria_array","id_array",
-					"gen_resistencia","fecha_array","observación_array","bacteria_antibiograma",
-					"id_antibiograma","fenotipo","fecha_antibiograma","reporte",
-					"observación_antibiograma","bacteria_eplex","id_eplex","mec_resistencia",
-					"fecha_explex","observación_eplex"
+							$cabecera = array( "Paciente","his","Médico","id_diagnostico",
+					"Enfermedades","Comentario_diag","Fecha_diagnóstico",
+					"id_prescipción","antibióticos","comentario_prescripción","id_ped_examen",
+					"tipo_examen","fecha_examen","id_muestra",
+					"fecha_muestra","n_frascos","id_gram","fecha_gram","resultado_gram","alarma",
+					"id_tecnicas","fecha_tecnicas","bacteria_array","resistecia_array","observacion_array",
+					"bacteria_antibiograma","fenotipo_antibiograma","reporte_antibiograma","observacion_antibiograma","bacteria_eplex","resitencia_eplex",
+					"observacion_eplex"
 				);
 
 
@@ -96,21 +101,25 @@ if (!isset($usuario)){
 
 			function imprimir(){
 				
-				$.get('../../archivos_php/diagnostico/resumen.php', function(response) {
-					console.log(response)
+				$.get('../../archivos_php/export_data/consulta_global.php', function(response) {
+					//console.log(response)
 					data = JSON.parse(response);
 
 					plantilla = "";
 					
 					data.forEach(obj => {
 								plantilla += "<tr>";
-
+								
 								Object.entries(obj).forEach(([key, value]) => {
-									plantilla += `<td>${value}</td>`;
-									//console.log(`${key} ${value}`);
+
+								
+										plantilla += `<td ><div class="contenedor">${value}</div></td>`;
+									
+									
+									
 								});
 								plantilla += "<tr>";
-								//console.log('-------------------');
+								
 					});
 
 					$('#ver_historial').html(plantilla);

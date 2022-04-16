@@ -1,119 +1,160 @@
 <?php
-
+ 
 
 require '../../conexion_base/conexion_base.php';
 
 
-$sql ="
-		SELECT (SELECT concat(pa.NOM_PACIENTE,' ',pa.APELLIDO_PACIENTE)  FROM pacientes pa WHERE pa.ID_PACIENTE=d.ID_PACIENTE) pacientes ,
-	   (SELECT concat(pm.NOM_PERSONAL,' ',pm.APE_PERSONAL)  FROM personal_medico pm WHERE pm.ID_PERSONALMEDICO = d.ID_PERSONALMEDICO) medicos,
-d.ID_DIAGNOSTICO, 
-d.ID_DIAGNOSTICO,
-( SELECT GROUP_CONCAT(enfermedad.NOM_ENFERMEDAD) from enf_diag, enfermedad WHERE  enf_diag.ID_DIAGNOSTICO=d.ID_DIAGNOSTICO AND enfermedad.ID_ENFERMEDAD=enf_diag.ID_ENFERMEDAD GROUP by enf_diag.ID_DIAGNOSTICO)
-,
+		$sql = "SELECT 
+		concat(pa.NOM_PACIENTE,' ',pa.APELLIDO_PACIENTE),pa.HIST_CLINICA,concat(pm.NOM_PERSONAL,' ',pm.APE_PERSONAL),
+		
+		d.ID_DIAGNOSTICO,d.DIAGNOSTICO_COMENTARIO,d.FECHA_DIAGNOSTICO,
+		abam.ID_ANTIBIOTICO_BASADO_EN_ANTIBIOGRAMA_MANUAL, abam.COMENTARIO,
+		px.ID_PEDIDO_EXAMEN,px.TIPO_EXAMEN,px.FECHA_PEDIDO,
+        rme.ID_RECEPCION_MUESTRA_EMOCULTIVO,rme.FECH_MUESTRA,rme.NUME_FRASCOS,
+        tg.ID_GRAM,tg.FECHA_GRAM,tg.RESULTDO_GRAM,tg.ALARMA,
+        te.ID_TECNICAS,te.FECHA_TECNICAS,
 
-
-
-d.DIAGNOSTICO_COMENTARIO,d.FECHA_DIAGNOSTICO,
-abam.ID_ANTIBIOTICO_BASADO_EN_ANTIBIOGRAMA_MANUAL, abam.ANTIBIOTICO_1, abam.DOSIS_1, abam.ANTIBIOTICO_2, abam.DOSIS_2,abam.ANTIBIOTICO_3,abam.DOSIS_3, abam.INICIO,abam.TIEMPO,abam.FIN,abam.ESCALA,abam.MANTIENE,abam.DESCALA,abam.AJUSTE_DOSIS,
-px.ID_PEDIDO_EXAMEN,px.TIPO_EXAMEN,px.FECHA_PEDIDO,
-rme.ID_RECEPCION_MUESTRA_EMOCULTIVO,rme.NOMBRE_RESPONSABLE,rme.FECH_MUESTRA,rme.NUME_FRASCOS,rme.RESULTADO,
-tg.ID_GRAM,tg.FECHA_GRAM,tg.RESULTDO_GRAM,tg.ALARMA,
-      
-t.ID_TECNICAS,
-
-(SELECT b.NOM_BACTERIA from bacteria b WHERE b.ID_BACTERIA = tarray.ID_BACTERIA),
-tarray.ID_ARRAY,tarray.GEN_RESISTENCIA,tarray.FECHA_ARRAY,tarray.OBSERVACION_ARRAY,
-(SELECT b.NOM_BACTERIA from bacteria b WHERE b.ID_BACTERIA = ta.ID_BACTERIA),
-ta.ID_ANTIBIOGRAMA,ta.FENOTIPO,ta.FECHA_ANTIBIOGRAMA,ta.REPORTE_ACRODE_A_GUIA,ta.OBSERVACION_ANTIBIOGRAMA,
-(SELECT b.NOM_BACTERIA from bacteria b WHERE b.ID_BACTERIA = te.ID_BACTERIA),
-        te.ID_EPLEX,te.MEC_RESISTENCIA,te.FECHA_EPLEX,te.OBSERVACION_EPLEX
+		(SELECT b.NOM_BACTERIA from bacteria b WHERE b.ID_BACTERIA = tarray.ID_BACTERIA),
+        tarray.GEN_RESISTENCIA,tarray.OBSERVACION_ARRAY,
+        (SELECT b.NOM_BACTERIA from bacteria b WHERE b.ID_BACTERIA = ta.ID_BACTERIA),
+        ta.FENOTIPO,ta.REPORTE_ACRODE_A_GUIA,ta.OBSERVACION_ANTIBIOGRAMA,
+        (SELECT b.NOM_BACTERIA from bacteria b WHERE b.ID_BACTERIA = teplex.ID_BACTERIA),
+        teplex.MEC_RESISTENCIA,teplex.OBSERVACION_EPLEX
 		
 		FROM
 		diagnostico d
+        	INNER JOIN pacientes pa ON pa.ID_PACIENTE = d.ID_PACIENTE
+            INNER JOIN personal_medico pm ON pm.ID_PERSONALMEDICO=d.ID_PERSONALMEDICO 
 		LEFT JOIN antibiotico__basado_en_antibiograma_manual abam ON d.ID_DIAGNOSTICO=abam.ID_DIAGNOSTICO
 		LEFT JOIN pedido_examen px ON abam.ID_ANTIBIOTICO_BASADO_EN_ANTIBIOGRAMA_MANUAL=px.ID_ANTIBIOTICO_BASADO_EN_ANTIBIOGRAMA_MANUAL
-        LEFT JOIN recepcion_muestra_emocultivo rme ON px.ID_PEDIDO_EXAMEN = rme.ID_PEDIDO_EXAMEN 
-        LEFT JOIN tincion_gram tg ON rme.ID_RECEPCION_MUESTRA_EMOCULTIVO = tg.ID_RECEPCION_MUESTRA_EMOCULTIVO
-        LEFT JOIN tecnicas t ON tg.ID_GRAM = t.ID_GRAM
-		LEFT JOIN tecnica_array tarray ON tarray.ID_ARRAY = t.ID_ARRAY
-		LEFT JOIN tecnica_antibiograma ta ON ta.ID_ANTIBIOGRAMA = t.ID_ANTIBIOGRAMA
-		LEFT JOIN tecnica_eplex te ON te.ID_EPLEX = t.ID_EPLEX;
-		";
-
-$resultado = mysqli_query ($conexion, $sql) or die (mysql_error ());
-
-$historial = array();
-
- 
+        LEFT JOIN recepcion_muestra_emocultivo rme ON rme.ID_PEDIDO_EXAMEN = px.ID_PEDIDO_EXAMEN
+        LEFT JOIN tincion_gram tg ON tg.ID_RECEPCION_MUESTRA_EMOCULTIVO = rme.ID_RECEPCION_MUESTRA_EMOCULTIVO
+        LEFT JOIN tecnicas te ON te.ID_GRAM = tg.ID_GRAM
+		LEFT JOIN tecnica_array tarray ON tarray.ID_ARRAY = te.ID_ARRAY
+		LEFT JOIN tecnica_antibiograma ta ON ta.ID_ANTIBIOGRAMA = te.ID_ANTIBIOGRAMA
+		LEFT JOIN tecnica_eplex teplex ON teplex.ID_EPLEX = te.ID_EPLEX
+        ORDER BY d.ID_DIAGNOSTICO DESC, abam.ID_ANTIBIOTICO_BASADO_EN_ANTIBIOGRAMA_MANUAL ASC
+        ";
 
 
-while( $row = mysqli_fetch_array($resultado) ) {
 
-$historial[] = array(
-		'paciente'=>$row[0],
-		'medico_diagnostico'=>$row[1],
-		'id_diagnostico'=>$row[2],
-		'enfermedad_1'=>$row[3],
-		'enfermedad_2'=>$row[4],
-		'conmentario_diagnostico'=>$row[5],
-		'fecha_diagnostico'=>$row[6],
-		'id_prescripcion'=>$row[7],
-		'antibiotico_1'=>$row[8],
-		'dosis_1'=>$row[9],
-		'antibiotico_2'=>$row[10],
-		'dosis_2'=>$row[11],
-		'antibiotico_3'=>$row[12],
-		'dosis_3'=>$row[13],
-		'f_inicio'=>$row[14],
-		'tiempo_dias'=>$row[15],
-		'f_fin'=>$row[16],
-		'escala'=>$row[17],
-		'mantiene'=>$row[18],
-		'descala'=>$row[19],
-		'ajuste_dosis'=>$row[20],
-		'id_examen'=>$row[21],
-		'tipo_examen'=>$row[22],
-		'fecha_examen'=>$row[23],
-		'id_muestra'=>$row[24],
-		'medico_laboratorio'=>$row[25],
-		'fecha_mustra'=>$row[26],
-		'n_frascos'=>$row[27],
-		'resultado_muestra'=>$row[28],
-		'id_tincion'=>$row[29],
-		'fecha_gram'=>$row[30],
-		'resultado_gram'=>$row[31],
-		'alarma'=>$row[32],
-
-		'id_tecnicas'=>$row[33],
-
-		'bacteria_array'=>$row[34],
-		'id_array'=>$row[35],
-		'gen_resistencia'=>$row[36],
-		'fecha_array'=>$row[37],
-		'observacion_array'=>$row[38],
-
-		'bacteria_antibiograma'=>$row[39],
-		'id_antibiograma'=>$row[40],
-		'fenotipo'=>$row[41],
-		'fecha_antibiograma'=>$row[42],
-		'reporte'=>$row[43],
-		'observacion_antibiograma'=>$row[44],
+	$resultado = mysqli_query($conexion ,$sql);
+	if (!$resultado) {
+		die("Error consultas").mysqli_error($conexion);
+	}
 
 
-		'bacteria_eplex'=>$row[45],
-		'id_eplex'=>$row[46],
-		'mec_resistencia'=>$row[47],
-		'fecha_explex'=>$row[48],
-		'observacion_eplex'=>$row[49]
+	
+
+	$json = array();
+	$enfermedades = "";
+	$ant = null;
+
+	
+	while($row = mysqli_fetch_array($resultado)){
+
+		$sql_enfermedades = "SELECT eg.ID_ENFERMEDAD, e.NOM_ENFERMEDAD
+							FROM enf_diag eg, enfermedad e
+							WHERE eg.ID_ENFERMEDAD = e.ID_ENFERMEDAD AND eg.ID_DIAGNOSTICO = $row[3] AND ESTADO = 1";
+		$resultado_enfermedades = mysqli_query($conexion ,$sql_enfermedades);
+		$enfermedades = "";
+	
+		while($row_enfermedades = mysqli_fetch_array($resultado_enfermedades)){ 
+			$enfermedades .= $row_enfermedades[1].", <br>";
+		}
+	
+////////////--------------------------------------------------------------------------
+
+			if($row[6] != null){
+					$sql_ant = "SELECT aic.ID_ANTIBIOTICO,a.NOMBRE_ANTIBIOTICO,aic.DOSIS, aic.unidad, aic.via, aic.metodo, aic.INICIO, aic.TIEMPO, aic.FIN, aic.ESCALA, aic.MANTIENE, aic.DESCALA, aic.AJUSTE_DOSIS, aic.EMPIRICO
+					 FROM  antibiotico_individual_completo aic ,antibiotico a 
+										WHERE aic.ID_ANTIBIOTICO = a.ID_ANTIBIOTICO AND aic.ID_ANTIBIOTICO_BASADO_EN_ANTIBIOGRAMA_MANUAL = $row[6] AND ESTADO = 1";
+
+					//echo $sql_ant."\n";
+					$resultado_ant = mysqli_query($conexion ,$sql_ant);
+					$ant = null;
+
+					while($row_ant = mysqli_fetch_array($resultado_ant)){ 
+
+						$ant .="".$row_ant[1]."<br>";
+						$ant .="dosis: ".$row_ant[2]."<br>";
+						$ant .="unidad: ".$row_ant[3].", ";
+						$ant .="via: ".$row_ant[4].", ";
+						$ant .="metodo: ".$row_ant[5]."<br>";
+						$ant .="fecha : ".$row_ant[6]." ";
+						$ant .=" ( ".$row_ant[7]." días) ";
+						$ant .=" ".$row_ant[8]."<br>";
+						$ant .="escala: ".$row_ant[9].", ";
+						$ant .="mantiene: ".$row_ant[10].", ";
+						$ant .="descala: ".$row_ant[11].", ";
+						$ant .="ajuste: ".$row_ant[12].", ";
+						$ant .="empirico: ".$row_ant[13]."<br><br> ";
+							
+						
+					}
+					
+				}
+////////////--------------------------------------------------------------------------		
 
 
-	);
- 
-}
 
-$jsonstring = json_encode($historial);
-echo $jsonstring;
+
+//////////////-----------------------------------------------------------------------
+
+
+		$json[] = array(
+			
+			'nombre_paciente' => $row[0],
+			'historia_clinica' => $row[1],
+			'nombre_medico' => $row[2],
+
+			'id_diagnostico'=>$row[3],
+			'enfermedades' => $enfermedades,
+			'comentario_diagnostico' => $row[4],
+			'fecha_diagnostico' => $row[5],
+
+
+			'id_prescripcion' => $row[6],
+			'antibioticos' => $ant,
+			'comentario_prescripcion' => $row[7],
+
+
+			'id_pedido_examen' => $row[8],
+			'tipo_examen' => $row[9],
+			'fecha_examen' => $row[10],
+
+			'id_muestra'=>$row[11],
+			'fecha_muestra'=>$row[12],
+			'n_frascos'=>$row[13],
+
+			'id_gram'=>$row[14],
+			'fecha_gram'=>$row[15],
+			'resultado_gram'=>$row[16],
+			'alarma'=>$row[17],
+
+			'id_tecnicas'=>$row[18],
+			'fecha_tecnicas'=>$row[19],
+
+			'bacteria_array'=>$row[20],
+			'resistecia_array'=>$row[21],
+			'observacion_array'=>$row[22],
+
+			'bacteria_antibiograma'=>$row[23],
+			'fenotipo_antibiograma'=>$row[24],
+			'reporte_antibiograma'=>$row[25],
+			'observacion_antibiograma'=>$row[26],
+
+			'bacteria_eplex'=>$row[27],
+			'resitencia_eplex'=>$row[28],
+			'observacion_eplex'=>$row[29]
+		);
+
+			
+
+	}
+
+	$jsonstring = json_encode($json);
+	echo $jsonstring;
 
 
 ?>
